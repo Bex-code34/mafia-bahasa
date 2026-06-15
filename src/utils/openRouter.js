@@ -1,14 +1,5 @@
 const OPENROUTER_API_KEY = process.env.REACT_APP_OPENROUTER_API_KEY;
 
-const languageNames = {
-  id: "Indonesian",
-  en: "English",
-  de: "German",
-  ko: "Korean",
-  ja: "Japanese",
-  es: "Spanish"
-};
-
 export const isOpenRouterKeyConfigured = () => Boolean(OPENROUTER_API_KEY);
 
 export const translateWithOpenRouter = async ({
@@ -37,5 +28,8 @@ export const translateWithOpenRouter = async ({
 
   const data = await response.json();
 
-  return data.translation;
+return {
+  translation: data.translation,
+  romanization: data.romanization
+};
 };

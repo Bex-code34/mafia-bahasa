@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getTranslation, getRomanization } from "../utils/translationEngine";
+import { getTranslation } from "../utils/translationEngine";
 import { historyStorage, settingsStorage } from "../utils/storage";
 import TranslationCard from "../components/TranslationCard";
 import "../styles/TranslatorPage.css";

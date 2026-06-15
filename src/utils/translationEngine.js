@@ -32,10 +32,3 @@ export const getTranslation = async (text, sourceLang, targetLang, style) => {
     style
   });
 };
-
-export const getRomanization = (text, language) => {
-  if (language === "ko" || language === "ja") {
-    return null;
-  }
-  return null;
-};
