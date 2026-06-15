@@ -25,18 +25,43 @@ app.post("/translate", async (req, res) => {
           Authorization: `Bearer ${process.env.REACT_APP_OPENROUTER_API_KEY}`
         },
         body: JSON.stringify({
-          model: "openai/gpt-4o-mini",
-          messages: [
-            {
-              role: "user",
-              content: `Translate this text from ${sourceLang} to ${targetLang} using ${style} style. Return only the translation.\n\n${input}`
-            }
-          ]
-        })
+  model: "openai/gpt-4o-mini",
+  messages: [
+    {
+      role: "system",
+      content: `
+You are a professional translator.
+
+Translate accurately and naturally.
+
+Style rules:
+- casual = fully casual/native informal speech
+- neutral = everyday standard speech
+- formal = polite/professional speech
+
+Important:
+- For Korean casual, NEVER use 요 endings.
+- For Korean formal, ALWAYS use polite endings.
+- Return ONLY the translation.
+`
+    },
+    {
+      role: "user",
+      content: `
+Source Language: ${sourceLang}
+Target Language: ${targetLang}
+Style: ${style}
+
+Text:
+${input}
+`
+    }
+  ]
+})
       }
     );
 
-    const data = await response.json();
+const data = await response.json();
 
     res.json({
       translation: data.choices?.[0]?.message?.content || ""
