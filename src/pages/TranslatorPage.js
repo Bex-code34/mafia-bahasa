@@ -73,14 +73,19 @@ function TranslatorPage({ onTranslate }) {
     try {
       const results = {};
       const promises = targetLanguages.map(async (targetLang) => {
-        const translation = await getTranslation(
-          inputText,
-          sourceLanguage,
-          targetLang,
-          style
-        );
-        const romanization = getRomanization(translation, targetLang);
-        results[targetLang] = { translation, romanization };
+       const result = await getTranslation(
+  inputText,
+  sourceLanguage,
+  targetLang,
+  style
+);
+
+console.log(result);
+
+results[targetLang] = {
+  translation: result.translation,
+  romanization: result.romanization
+};
       });
 
       await Promise.all(promises);

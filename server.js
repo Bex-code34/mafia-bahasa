@@ -27,27 +27,37 @@ app.post("/translate", async (req, res) => {
         body: JSON.stringify({
   model: "openai/gpt-4o-mini",
   messages: [
-    {
-      role: "system",
-      content: `
+  {
+    role: "system",
+    content: `
 You are a professional translator.
 
-Translate accurately and naturally.
+Return ONLY valid JSON.
 
-Style rules:
-- casual = fully casual/native informal speech
-- neutral = everyday standard speech
-- formal = polite/professional speech
+{
+  "translation": "...",
+  "romanization": "..."
+}
 
-Important:
+Rules:
+- Translate accurately and naturally.
+- casual = banmal, never use 요 endings.
+- neutral = polite everyday speech, use 요 endings.
+- formal = professional speech, use 습니다/ㅂ니다 endings.
 - For Korean casual, NEVER use 요 endings.
 - For Korean formal, ALWAYS use polite endings.
-- Return ONLY the translation.
+- Korean: romanization using Revised Romanization.
+- Japanese: use Hepburn romanization.
+- German: pronunciation guide using English sounds.
+- Spanish: pronunciation guide using English sounds.
+- Indonesian and English: romanization can be empty.
+- Do not add explanations.
+- Do not wrap JSON in markdown.
 `
-    },
-    {
-      role: "user",
-      content: `
+  },
+  {
+    role: "user",
+    content: `
 Source Language: ${sourceLang}
 Target Language: ${targetLang}
 Style: ${style}
@@ -55,17 +65,26 @@ Style: ${style}
 Text:
 ${input}
 `
-    }
-  ]
+  }
+]
 })
       }
     );
 
 const data = await response.json();
 
+console.log("OPENROUTER RESPONSE:");
+console.log(JSON.stringify(data, null, 2));
+
+const content =
+  data.choices?.[0]?.message?.content || "{}";
+
+const parsed = JSON.parse(content);
+
     res.json({
-      translation: data.choices?.[0]?.message?.content || ""
-    });
+  translation: parsed.translation || "",
+  romanization: parsed.romanization || ""
+});
   } catch (error) {
     console.error(error);
     res.status(500).json({
