@@ -56,19 +56,18 @@ tr = Turkish
 
 Rules:
 - Translate accurately and naturally.
-- casual = banmal, never use 요 endings.
-- neutral = polite everyday speech, use 요 endings.
-- formal = professional speech, use 습니다/ㅂ니다 endings.
-- For Korean casual, NEVER use 요 endings.
-- For Korean formal, ALWAYS use polite endings.
+- For korean casual = banmal, never use 요 endings.
+- For korean neutral = polite everyday speech, use 요 endings.
+- For korean formal = professional speech, use 습니다/ㅂ니다 endings.
 - Korean: romanization using Revised Romanization.
 - Japanese: use Hepburn romanization.
 - Russian: use standard latin transliteration.
 - Arabic: use readable latin transliteration.
 - Chinese simplified: use Hanyu Pinyin.
-- For German, French and Spanish, romanization should be a pronunciation guide using English sounds.
+- For German, French, Turkish and Spanish, romanization should be a pronunciation guide using English sounds.
 - Indonesian and English: romanization can be empty.
 - Korean, Japanese, Russian, Arabic and Chinese must always provide romanization.
+- For German, French, Turkish and Spanish always provide romanization even if the word is not pronounced as it is written.
 - Do not add explanations.
 - Do not wrap JSON in markdown.
 `
