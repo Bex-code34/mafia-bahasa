@@ -66,12 +66,12 @@ function SettingsPage() {
             <ul>
               <li>✓ Support for 11 languages</li>
               <li>✓ Casual / Neutral / Formal styles</li>
-<li>✓ Romanization & pronunciation guides</li>
-<li>✓ Audio pronunciation</li>
-<li>✓ Translation history</li>
-<li>✓ Language auto-detection</li>
-<li>✓ Country flags</li>
-<li>✓ Mobile-friendly design</li>
+              <li>✓ Romanization & pronunciation guides</li>
+              <li>✓ Audio pronunciation</li>
+              <li>✓ Translation history</li>
+              <li>✓ Language auto-detection</li>
+              <li>✓ Country flags</li>
+              <li>✓ Mobile-friendly design</li>
             </ul>
           </div>
           <div className="about-footer">
