@@ -64,16 +64,18 @@ function SettingsPage() {
           <div className="about-features">
             <h3>Features:</h3>
             <ul>
-              <li>✓ Support for 6 major languages</li>
-              <li>✓ Multiple translation styles (Casual, Neutral, Formal)</li>
-              <li>✓ Korean and Japanese romanization</li>
-              <li>✓ Local translation history</li>
-              <li>✓ Mobile-friendly responsive design</li>
-              <li>✓ Dark theme for comfortable reading</li>
+              <li>✓ Support for 11 languages</li>
+              <li>✓ Casual / Neutral / Formal styles</li>
+<li>✓ Romanization & pronunciation guides</li>
+<li>✓ Audio pronunciation</li>
+<li>✓ Translation history</li>
+<li>✓ Language auto-detection</li>
+<li>✓ Country flags</li>
+<li>✓ Mobile-friendly design</li>
             </ul>
           </div>
           <div className="about-footer">
-            <p className="version">Version 1.0.0</p>
+            <p className="version">Version 1.1 Learning Upgrade</p>
             <p className="created">Created with care for language learners</p>
           </div>
         </div>
