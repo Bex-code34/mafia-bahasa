@@ -10,6 +10,7 @@ function TranslatorPage({ onTranslate }) {
   const [inputText, setInputText] = useState("");
   const [style, setStyle] = useState("neutral");
   const [translations, setTranslations] = useState({});
+  const [detectedLanguage, setDetectedLanguage] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -81,10 +82,14 @@ function TranslatorPage({ onTranslate }) {
 );
 
 console.log(result);
+if (sourceLanguage === "auto_detect") {
+  setDetectedLanguage(result.detectedLanguage);
+}
 
 results[targetLang] = {
   translation: result.translation,
-  romanization: result.romanization
+  romanization: result.romanization,
+  detectedLanguage: result.detectedLanguage
 };
       });
 
@@ -119,6 +124,11 @@ results[targetLang] = {
       {/* Source Language Section */}
       <div className="card language-selector-card">
         <label className="label">Source Language</label>
+        {sourceLanguage === "auto_detect" && detectedLanguage && (
+          <div className="detected-language">
+            Detected: {detectedLanguage.toUpperCase()}
+          </div>
+        )}
         <select
           value={sourceLanguage}
           onChange={(e) => setSourceLanguage(e.target.value)}

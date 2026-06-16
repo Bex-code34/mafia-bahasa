@@ -30,6 +30,7 @@ export const translateWithOpenRouter = async ({
 
 return {
   translation: data.translation,
-  romanization: data.romanization
+  romanization: data.romanization,
+  detectedLanguage: data.detectedLanguage
 };
 };

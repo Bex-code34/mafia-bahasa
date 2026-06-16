@@ -36,8 +36,18 @@ Return ONLY valid JSON.
 
 {
   "translation": "...",
-  "romanization": "..."
+  "romanization": "...",
+  "detectedLanguage": "..."
 }
+
+- Detect the source Language and return its code.
+- Use:
+id = Indonesian
+en = English
+de = German
+es = Spanish
+ko = Korean
+ja = Japanese
 
 Rules:
 - Translate accurately and naturally.
@@ -83,7 +93,8 @@ const parsed = JSON.parse(content);
 
     res.json({
   translation: parsed.translation || "",
-  romanization: parsed.romanization || ""
+  romanization: parsed.romanization || "",
+  detectedLanguage: parsed.detectedLanguage || sourceLang
 });
   } catch (error) {
     console.error(error);

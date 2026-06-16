@@ -326,4 +326,11 @@
     padding: 16px 32px;
     font-size: 17px;
   }
+
+  .detected-language {
+    margin-top: 8px;
+    color: #818cf8;
+    font-size: 13px;
+    font-weight: 600;
+  }
 }
