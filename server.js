@@ -63,9 +63,12 @@ Rules:
 - For Korean formal, ALWAYS use polite endings.
 - Korean: romanization using Revised Romanization.
 - Japanese: use Hepburn romanization.
-- German: pronunciation guide using English sounds.
-- Spanish: pronunciation guide using English sounds.
+- Russian: use standard latin transliteration.
+- Arabic: use readable latin transliteration.
+- Chinese simplified: use Hanyu Pinyin.
+- For German, French and Spanish, romanization should be a pronunciation guide using English sounds.
 - Indonesian and English: romanization can be empty.
+- Korean, Japanese, Russian, Arabic and Chinese must always provide romanization.
 - Do not add explanations.
 - Do not wrap JSON in markdown.
 `
