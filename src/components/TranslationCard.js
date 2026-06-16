@@ -11,14 +11,11 @@ function TranslationCard({
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    const textToCopy = romanization
-      ? `${translation}\n${romanization}`
-      : translation;
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
+  navigator.clipboard.writeText(translation).then(() => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  });
+};
 
   return (
     <div className="translation-card">
