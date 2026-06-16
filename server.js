@@ -48,6 +48,11 @@ de = German
 es = Spanish
 ko = Korean
 ja = Japanese
+fr = French
+zh = Chinese (simplified)
+ru = Russian
+ar = Arabic
+tr = Turkish
 
 Rules:
 - Translate accurately and naturally.

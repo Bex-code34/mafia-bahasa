@@ -1,6 +1,6 @@
 import { translateWithOpenRouter } from "./openRouter";
 
-const supportedLanguages = ["id", "en", "de", "ko", "ja", "es"];
+const supportedLanguages = ["id", "en", "de", "ko", "ja", "es", "fr", "zh", "ru", "ar", "tr"];
 const supportedStyles = ["casual", "neutral", "formal"];
 
 const validateLanguage = (lang, fieldName) => {

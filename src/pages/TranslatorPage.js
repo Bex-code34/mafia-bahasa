@@ -27,7 +27,12 @@ function TranslatorPage({ onTranslate }) {
     { code: "de", name: "German" },
     { code: "ko", name: "Korean" },
     { code: "ja", name: "Japanese" },
-    { code: "es", name: "Spanish" }
+    { code: "es", name: "Spanish" },
+    { code: "fr", name: "French" },
+    { code: "zh", name: "Chinese (simplified)" },
+    { code: "ru", name: "Russian" },
+    { code: "ar", name: "Arabic" },
+    { code: "tr", name: "Turkish" },
   ];
 
   const targetLanguagesList = languages.filter((l) => l.code !== "auto_detect");
