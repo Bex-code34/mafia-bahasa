@@ -29,8 +29,8 @@ export const translateWithOpenRouter = async ({
   const data = await response.json();
 
 return {
-  translation: data.translation,
-  romanization: data.romanization,
+  type: data.type,
+  translations: data.translations,
   detectedLanguage: data.detectedLanguage
-};
+}
 };

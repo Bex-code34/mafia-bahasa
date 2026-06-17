@@ -86,20 +86,22 @@ function TranslatorPage({ onTranslate }) {
   style
 );
 
-console.log(result);
+console.log("FULL RESULT:");
+console.log(JSON.stringify(result, null, 2));
+
+console.log("TRANSLATIONS:");
+console.log(result.translations);
+
 if (sourceLanguage === "auto_detect") {
   setDetectedLanguage(result.detectedLanguage);
 }
 
-results[targetLang] = {
-  translation: result.translation,
-  romanization: result.romanization,
-  detectedLanguage: result.detectedLanguage
-};
+results[targetLang] = result.translations;
       });
 
       await Promise.all(promises);
       setTranslations(results);
+      console.log(translations);
 
       // Save to history
       historyStorage.add({
@@ -234,19 +236,21 @@ results[targetLang] = {
 
       {/* Translation Results */}
       <div className="translations-container">
-        {Object.entries(translations).map(([langCode, data]) => {
-          const langName = languages.find((l) => l.code === langCode)?.name;
-          return (
-            <TranslationCard
-              key={langCode}
-              language={langName}
-              languageCode={langCode}
-              translation={data.translation}
-              romanization={data.romanization}
-              style={style}
-            />
-          );
-        })}
+       {Object.entries(translations).map(([langCode, data]) => {
+  const langName = languages.find(
+    (l) => l.code === langCode
+  )?.name;
+
+  return (
+    <TranslationCard
+      key={langCode}
+      language={langName}
+      languageCode={langCode}
+      translations={data}
+      style={style}
+    />
+  );
+})}
       </div>
     </div>
   );

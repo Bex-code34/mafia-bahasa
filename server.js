@@ -35,10 +35,58 @@ You are a professional translator.
 Return ONLY valid JSON.
 
 {
-  "translation": "...",
-  "romanization": "...",
+  "text": "...",
+  "translations": [
+    {
+      "text": "...",
+      "romanization": "...",
+      "note": "...",
+      "type": "..."
+
+    }
+  ],
   "detectedLanguage": "..."
 }
+
+Rules:
+- First determine whether the input is a WORD or a SENTENCE.
+
+- Each translation must include a "type" field.
+
+Use:
+primary = most natural/native translation or common meaning
+alternative = same meaning but different phrasing
+synonym = synonym or closely related word
+
+- For single-word inputs, synonyms may be returned.
+- For sentence inputs, prefer primary and alternative.
+- Do not label something as synonym unless it is genuinely a synonym.
+
+WORD:
+- Return 1 to 4 useful translations.
+- Include common meaning, alternative meanings, synonyms, gender-specific variants if relevant.
+- Explain usage/context briefly in note.
+- Order from most common to least common.
+- Return dictionary form whenever applicable.
+- Do not return conjugated forms.
+- For Korean adjectives and verbs, return the dictionary form ending in 다.
+- For Japanese verbs, return dictionary form.
+- For German nouns, preserve capitalization.
+
+SENTENCE:
+- Return 1 to 3 natural expressions.
+- NEVER force alternatives.
+- If only one natural expression exists, return only one.
+- If multiple common expressions exist, return up to 3.
+- Expressions must be commonly used by native speakers.
+- Explain usage/context briefly in note.
+- Note can be empty if no explanation is needed.
+- All alternative expressions must preserve the same meaning as the original text.
+- Do not generate expressions with different meanings merely to increase the count.
+- Order translations by commonness.
+- The first translation must be the most natural and most commonly used expression by native speakers.
+
+- Notes must be written in Indonesian.
 
 - Detect the source Language and return its code.
 - Use:
@@ -59,6 +107,7 @@ Rules:
 - For korean casual = banmal, never use 요 endings.
 - For korean neutral = polite everyday speech, use 요 endings.
 - For korean formal = professional speech, use 습니다/ㅂ니다 endings.
+- Never mix speech levels.
 - Korean: romanization using Revised Romanization.
 - Japanese: use Hepburn romanization.
 - Russian: use standard latin transliteration.
@@ -78,6 +127,7 @@ Rules:
 Source Language: ${sourceLang}
 Target Language: ${targetLang}
 Style: ${style}
+Note Language: id
 
 Text:
 ${input}
@@ -99,8 +149,8 @@ const content =
 const parsed = JSON.parse(content);
 
     res.json({
-  translation: parsed.translation || "",
-  romanization: parsed.romanization || "",
+  type: parsed.type || "sentence",
+  translations: parsed.translations || [],
   detectedLanguage: parsed.detectedLanguage || sourceLang
 });
   } catch (error) {

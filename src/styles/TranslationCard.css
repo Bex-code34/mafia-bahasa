@@ -24,7 +24,6 @@
   align-items: flex-start;
   gap: 12px;
   margin-bottom: 12px;
-  margin-left: 8px;
 }
 
 .language-name {
@@ -128,5 +127,12 @@
   .copy-button {
     padding: 8px 12px;
     font-size: 13px;
+  }
+
+  .translation-type {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    opacity: 0.9;
   }
 }

@@ -13,7 +13,12 @@ function SettingsPage() {
     { code: "de", name: "German" },
     { code: "ko", name: "Korean" },
     { code: "ja", name: "Japanese" },
-    { code: "es", name: "Spanish" }
+    { code: "es", name: "Spanish" },
+    { code: "fr", name: "French" },
+    { code: "ru", name: "Russian" },
+    { code: "tr", name: "Turkish" },
+    { code: "ar", name: "Arabic" },
+    { code: "zh", name: "Chinese" }
   ];
 
   useEffect(() => {
@@ -58,8 +63,8 @@ function SettingsPage() {
         <div className="about-content">
           <p>
             <strong>Mafia Bahasa</strong> is a modern language learning
-            translator designed to help you understand how sentences change
-            across multiple languages and formality levels.
+            translator designed to help you understand how sentences and words change
+            across multiple languages with different nuancesand formality levels.
           </p>
           <div className="about-features">
             <h3>Features:</h3>
@@ -72,11 +77,15 @@ function SettingsPage() {
               <li>✓ Language auto-detection</li>
               <li>✓ Country flags</li>
               <li>✓ Mobile-friendly design</li>
+              <li>✓ Context and nuance explanations</li>
+              <li>✓ Synonyms and alternative translations</li>
+              <li>✓ Multiple translation expressions</li>
             </ul>
           </div>
           <div className="about-footer">
-            <p className="version">Version 1.1 Learning Upgrade</p>
+            <p className="version">Version 1.2 Learning Upgrade</p>
             <p className="created">Created with care for language learners</p>
+            <p className="personal">Made by Hanif J</p>
           </div>
         </div>
       </div>
