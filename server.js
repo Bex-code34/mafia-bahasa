@@ -26,6 +26,7 @@ app.post("/translate", async (req, res) => {
         },
         body: JSON.stringify({
   model: "openai/gpt-4o-mini",
+  temperature: 0,
   messages: [
   {
     role: "system",
@@ -87,6 +88,9 @@ SENTENCE:
 - The first translation must be the most natural and most commonly used expression by native speakers.
 
 - Notes must be written in Indonesian.
+- For single-word inputs, prioritize detecting the actual language of the word before translating.
+- Do not assume the user wants a translation into their native language.
+- If the detected language is the same as the target language, return the original word unchanged.
 
 - Detect the source Language and return its code.
 - Use:
@@ -146,7 +150,23 @@ console.log(JSON.stringify(data, null, 2));
 const content =
   data.choices?.[0]?.message?.content || "{}";
 
-const parsed = JSON.parse(content);
+const cleaned = content
+  .replace(/```json/g, "")
+  .replace(/```/g, "")
+  .trim();
+
+let parsed;
+
+try {
+  parsed = JSON.parse(cleaned);
+} catch {
+  console.error("INVALID JSON:");
+  console.error(cleaned);
+
+  return res.status(500).json({
+    error: "Invalid AI response"
+  });
+}
 
     res.json({
   type: parsed.type || "sentence",
