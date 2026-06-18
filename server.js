@@ -61,6 +61,7 @@ synonym = synonym or closely related word
 
 - For single-word inputs, synonyms may be returned.
 - For sentence inputs, prefer primary and alternative.
+- Prioritize primary over alternative.
 - Do not label something as synonym unless it is genuinely a synonym.
 
 WORD:
@@ -92,6 +93,14 @@ SENTENCE:
 - Do not assume the user wants a translation into their native language.
 - If the detected language is the same as the target language, return the original word unchanged.
 
+CRITICAL:
+The translation text MUST ALWAYS be written in the TARGET LANGUAGE.
+Never output translation text in Indonesian unless targetLang = id.
+The note language and translation language are different things.
+Notes must always be in Indonesian, regardless of the target language.
+Translation text must always be in the target language, regardless of the note language.
+Prioritize translation literal word-for-word accuracy over naturalness, but still ensure the translation is understandable and natural in the target language.
+
 - Detect the source Language and return its code.
 - Use:
 id = Indonesian
@@ -119,8 +128,8 @@ Rules:
 - Chinese simplified: use Hanyu Pinyin.
 - For German, French, Turkish and Spanish, romanization should be a pronunciation guide using English sounds.
 - Indonesian and English: romanization can be empty.
-- Korean, Japanese, Russian, Arabic and Chinese must always provide romanization.
-- For German, French, Turkish and Spanish always provide romanization even if the word is not pronounced as it is written.
+- Korean, Japanese, Russian, Arabic and Chinese MUST ALWAYS provide romanization.
+- For German, French, Turkish and Spanish ALWAYS provide romanization even if the word is pronounced as it is written.
 - Do not add explanations.
 - Do not wrap JSON in markdown.
 `
@@ -177,6 +186,97 @@ try {
     console.error(error);
     res.status(500).json({
       error: "Translation failed"
+    });
+  }
+});
+
+app.post("/grammar", async (req, res) => {
+  try {
+    const { text, language } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ error: "Text is required" });
+    }
+
+    const response = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.REACT_APP_OPENROUTER_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "openai/gpt-4o-mini",
+          temperature: 0,
+          messages: [
+            {
+              role: "system",
+              content: `
+You are a grammar correction engine.
+
+Return ONLY valid JSON:
+
+{
+  "score": 0,
+  "corrected": "...",
+  "nativeVersion": "...",
+  "explanation": "..."
+}
+
+Rules:
+- Keep meaning same.
+- Fix grammar correctly.
+- Explanation in Indonesian.
+- NativeVersion = most natural native phrasing.
+- Detect language automatically.
+
+Score:
+- give a score out of 100 based on grammar correctness, clarity, and naturalness.
+- 100 = perfect grammar, clear and natural.
+- 80-99 = minor errors, still understandable.
+- 50-79 = noticeable errors, may affect clarity.
+- 0-49 = major errors, hard to understand.
+
+Corrected:
+- Grammatically correct version.
+
+NativeVersion:
+- Most natural way a native speaker would say it.
+
+Explanation:
+- Explain mistakes clearly in Indonesian.
+`
+            },
+            {
+              role: "user",
+              content: text
+            }
+          ]
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    const content = data?.choices?.[0]?.message?.content || "{}";
+
+    let parsed;
+    try {
+      const cleaned = content
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim();
+      parsed = JSON.parse(cleaned);
+    } catch {
+      return res.status(500).json({ error: "AI returned invalid JSON" });
+    }
+
+    return res.json(parsed);
+
+  } catch (error) {
+    return res.status(500).json({
+      error: "Grammar check failed"
     });
   }
 });

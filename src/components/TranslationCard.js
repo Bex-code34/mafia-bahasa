@@ -124,10 +124,7 @@ return (
             </button>
           </div>
 
-          {index <
-            translations.length - 1 && (
-            <hr />
-          )}
+
         </div>
       )
     )}

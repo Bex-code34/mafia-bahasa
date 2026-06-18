@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "./components/Header";
 import Navigation from "./components/Navigation";
 import TranslatorPage from "./pages/TranslatorPage";
+import GrammarPage from "./pages/GrammarPage";
 import HistoryPage from "./pages/HistoryPage";
 import SettingsPage from "./pages/SettingsPage";
 import "./App.css";
@@ -24,6 +25,7 @@ function App() {
         {currentPage === "history" && (
           <HistoryPage key={historyRefresh} />
         )}
+        {currentPage === "grammar" && <GrammarPage />}
         {currentPage === "settings" && <SettingsPage />}
       </div>
       <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />

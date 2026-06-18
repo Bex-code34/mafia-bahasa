@@ -32,5 +32,28 @@ return {
   type: data.type,
   translations: data.translations,
   detectedLanguage: data.detectedLanguage
-}
+};
+};
+
+export const checkGrammarWithOpenRouter = async ({
+  text,
+  language
+}) => {
+  const response = await fetch("/grammar", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      text,
+      language
+    })
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Backend error: ${errorText}`);
+  }
+
+  return await response.json();
 };

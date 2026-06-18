@@ -13,6 +13,14 @@ function Navigation({ currentPage, onPageChange }) {
         <span className="nav-label">Translate</span>
       </button>
       <button
+  className={`nav-button ${currentPage === "grammar" ? "active" : ""}`}
+  onClick={() => onPageChange("grammar")}
+  title="Grammar"
+>
+  <span className="nav-icon">📝</span>
+  <span className="nav-label">Grammar</span>
+</button>
+      <button
         className={`nav-button ${currentPage === "history" ? "active" : ""}`}
         onClick={() => onPageChange("history")}
         title="History"

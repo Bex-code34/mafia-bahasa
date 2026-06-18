@@ -1,0 +1,31 @@
+.grammar-score-card {
+  background: #162447;
+  border: 1px solid #2f5fff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.grammar-score {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #6ea8ff;
+}
+
+.grammar-result-card {
+  background: #162447;
+  border-radius: 16px;
+  padding: 18px;
+  margin-top: 16px;
+}
+
+.grammar-result-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #9bb8ff;
+}
+
+.grammar-result-text {
+  line-height: 1.7;
+}

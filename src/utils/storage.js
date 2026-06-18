@@ -16,14 +16,24 @@ export const historyStorage = {
     try {
       const history = historyStorage.getAll();
       const newEntry = {
-        id: Date.now().toString(),
-        text: entry.text,
-        sourceLanguage: entry.sourceLanguage,
-        targetLanguages: entry.targetLanguages,
-        translations: entry.translations,
-        style: entry.style,
-        timestamp: new Date().toISOString()
-      };
+  id: Date.now().toString(),
+
+  type: entry.type || "translation",
+
+  text: entry.text,
+
+  sourceLanguage: entry.sourceLanguage,
+  targetLanguages: entry.targetLanguages,
+
+  translations: entry.translations,
+  style: entry.style,
+
+  corrected: entry.corrected,
+  nativeVersion: entry.nativeVersion,
+  explanation: entry.explanation,
+
+  timestamp: new Date().toISOString()
+};
       history.unshift(newEntry);
       localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
       return newEntry;

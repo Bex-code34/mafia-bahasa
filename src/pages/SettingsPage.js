@@ -80,12 +80,14 @@ function SettingsPage() {
               <li>✓ Context and nuance explanations</li>
               <li>✓ Synonyms and alternative translations</li>
               <li>✓ Multiple translation expressions</li>
+              <li>✓ Literal word-for-word translations</li>
+              <li>✓ Grammar correction</li>
             </ul>
           </div>
           <div className="about-footer">
-            <p className="version">Version 1.2 Learning Upgrade</p>
+            <p className="version">Version 1.3 Learning Upgrade</p>
             <p className="created">Created with care for language learners</p>
-            <p className="personal">Made by Hanif J</p>
+            <p className="personal">Made by -H-</p>
           </div>
         </div>
       </div>

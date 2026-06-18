@@ -1,4 +1,4 @@
-import { translateWithOpenRouter } from "./openRouter";
+import { translateWithOpenRouter, checkGrammarWithOpenRouter } from "./openRouter";
 
 const supportedLanguages = ["id", "en", "de", "ko", "ja", "es", "fr", "zh", "ru", "ar", "tr"];
 const supportedStyles = ["casual", "neutral", "formal"];
@@ -30,5 +30,21 @@ export const getTranslation = async (text, sourceLang, targetLang, style) => {
     sourceLang,
     targetLang,
     style
+  });
+};
+
+export const checkGrammar = async (
+  text,
+  language
+) => {
+  const trimmedText = String(text || "").trim();
+
+  if (!trimmedText) {
+    throw new Error("Text is required.");
+  }
+
+  return checkGrammarWithOpenRouter({
+    text: trimmedText,
+    language
   });
 };
