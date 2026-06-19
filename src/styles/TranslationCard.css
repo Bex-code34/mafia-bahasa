@@ -1,13 +1,13 @@
 .translation-card {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(129, 140, 248, 0.05));
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  background: #111111;
+  border: 1px solid rgba(212, 175, 55, 0.25);
   border-radius: 12px;
   padding: 16px;
   backdrop-filter: blur(10px);
-  animation: slideUp 0.3s ease;
+  animation: cardAppear 0.35s ease;
 }
 
-@keyframes slideUp {
+@keyframes cardAppear {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -29,7 +29,7 @@
 .language-name {
   font-size: 16px;
   font-weight: 700;
-  color: #f1f5f9;
+  color: #f4d03f;
   margin-bottom: 4px;
 }
 
@@ -60,7 +60,7 @@
 }
 
 .copy-button:hover {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(212, 175, 55, .15);
   border-color: #F4D03F;
 }
 
@@ -115,6 +115,12 @@
   margin-top: 4px;
 }
 
+.variant-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
 @media (min-width: 768px) {
   .translation-card {
     padding: 20px;
@@ -143,9 +149,4 @@
     font-size: 13px;
   }
 
-  .variant-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-  }
 }

@@ -54,6 +54,7 @@ function HistoryItem({ item, onDelete, languages, formatDate }) {
             <div
               key={langCode}
               className="translation-detail"
+             
             >
               <h4 className="detail-language">
                 {languages[langCode]}
@@ -63,21 +64,35 @@ function HistoryItem({ item, onDelete, languages, formatDate }) {
                 {
                   item.translations[
                     langCode
-                  ]?.[0]?.text
+                  ]?.translations?.[0]?.text
                 }
               </p>
 
               {item.translations[
                 langCode
-              ]?.[0]?.romanization && (
+              ]?.translations?.[0]?.romanization && (
                 <p className="detail-romanization">
                   {
                     item.translations[
                       langCode
-                    ]?.[0]?.romanization
+                    ]?.translations?.[0]?.romanization
                   }
                 </p>
               )}
+
+              <button
+  className="copy-history-button"
+  onClick={() =>
+    navigator.clipboard.writeText(
+      item.translations[
+        langCode
+      ]?.translations?.[0]?.text || ""
+    )
+  }
+>
+  📋 Copy
+</button>
+
             </div>
           )
         )}

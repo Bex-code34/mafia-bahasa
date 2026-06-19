@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { checkGrammar } from "../utils/translationEngine";
 import { historyStorage } from "../utils/storage";
 import "../styles/GrammarPage.css";
 
 function GrammarPage() {
-  const [text, setText] = useState("");
+  const savedDraft = localStorage.getItem("grammarDraft") || "";
+  const [text, setText] = useState(savedDraft);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [actionMessage,setActionMessage] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("grammarDraft",text);
+  }, [text]);
 
   const handleCheck = async () => {
     try {
@@ -48,6 +53,11 @@ function GrammarPage() {
  const handleClear = () => {
   setText("");
   setResult(null);
+  localStorage.removeItem("grammarDraft");
+  setActionMessage("Cleared");
+  setTimeout(() => {
+    setActionMessage("");
+  }, 1500);
 
   setActionMessage("Cleared");
 
@@ -56,11 +66,11 @@ function GrammarPage() {
   }, 1500);
 };
 
- const handleCopyResult = () => {
+ const handleCopyResult = (textToCopy) => {
   if (!result) return;
 
   navigator.clipboard.writeText(
-    result.corrected
+    textToCopy
   );
 
   setActionMessage("Copied");
@@ -127,7 +137,7 @@ function GrammarPage() {
   </div>
 
 <div className="grammar-tools">
-  <button onClick={handleCopyResult}>
+  <button onClick={() => handleCopyResult(result.corrected)}>
     Copy
     </button>
   </div>
@@ -142,7 +152,7 @@ function GrammarPage() {
             </div>
 
             <div className="grammar-tools">
-  <button onClick={handleCopyResult}>
+  <button onClick={() => handleCopyResult(result.nativeVersion)}>
     Copy
     </button>
   </div>

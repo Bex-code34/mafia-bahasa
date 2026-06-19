@@ -5,12 +5,24 @@ function Header() {
   return (
     <header className="app-header">
       <div className="brand-container">
-         <img src="/logo.png"
+
+  <img
+    src="logo.png"
     alt="MB"
-    className="app-logo"/>
-        <h1 className="app-title">Mafia Bahasa</h1>
-        </div>
-        <p className="app-subtitle">Your Language Journey Partner</p>
+    className="app-logo"
+  />
+
+  <div>
+    <h1 className="app-title">
+      MAFIA BAHASA
+    </h1>
+
+    <p className="app-subtitle">
+      Your Language Journey Partner
+    </p>
+  </div>
+
+</div>
     </header>
   );
 }

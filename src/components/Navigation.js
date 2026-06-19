@@ -9,7 +9,7 @@ function Navigation({ currentPage, onPageChange }) {
         onClick={() => onPageChange("translator")}
         title="Translator"
       >
-        <span className="nav-icon">✎</span>
+        <span className="nav-icon">✏️</span>
         <span className="nav-label">Translate</span>
       </button>
       <button
@@ -17,7 +17,7 @@ function Navigation({ currentPage, onPageChange }) {
   onClick={() => onPageChange("grammar")}
   title="Grammar"
 >
-  <span className="nav-icon">📝</span>
+  <span className="nav-icon">📖</span>
   <span className="nav-label">Grammar</span>
 </button>
       <button

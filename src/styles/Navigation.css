@@ -4,12 +4,8 @@
   left: 0;
   right: 0;
   height: 80px;
-  background: linear-gradient(
-    180deg,
-    rgba(30, 41, 59, 0.95) 0%,
-    rgba(15, 23, 42, 0.99) 100%
-  );
-  border-top: 1px solid #475569;
+  background: #050505;
+  border-top: 1px solid #d4af37;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -23,7 +19,7 @@
   height: 100%;
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #777;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -36,10 +32,15 @@
 
 .nav-button:active {
   transform: scale(0.95);
+  text-shadow: 0 0 8px rgba(212,175,55,.8);
 }
 
 .nav-button.active {
-  color: #D4AF37;
+  color: #f4d03f;
+}
+
+.nav-button.active .nav-icon {
+  transform: translateY(-2px);
 }
 
 .nav-button.active::after {
@@ -58,6 +59,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: .3s;
 }
 
 .nav-label {

@@ -5,10 +5,28 @@ import TranslationCard from "../components/TranslationCard";
 import "../styles/TranslatorPage.css";
 
 function TranslatorPage({ onTranslate }) {
-  const [sourceLanguage, setSourceLanguage] = useState("auto_detect");
-  const [targetLanguages, setTargetLanguages] = useState(settingsStorage.getTargetLanguages());
-  const [inputText, setInputText] = useState("");
-  const [style, setStyle] = useState("neutral");
+  const savedDraft = JSON.parse(localStorage.getItem("translatorDraft")) || {};
+ const [sourceLanguage, setSourceLanguage] =
+  useState(
+    savedDraft.sourceLanguage ||
+    "auto_detect"
+  );
+
+const [targetLanguages, setTargetLanguages] =
+  useState(
+    savedDraft.targetLanguages ||
+    settingsStorage.getTargetLanguages()
+  );
+
+const [inputText, setInputText] =
+  useState(
+    savedDraft.inputText || ""
+  );
+
+const [style, setStyle] =
+  useState(
+    savedDraft.style || "neutral"
+  );
   const [translations, setTranslations] = useState({});
   const [detectedLanguage, setDetectedLanguage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,6 +37,26 @@ function TranslatorPage({ onTranslate }) {
     const settings = settingsStorage.getSettings();
     setSourceLanguage(settings.defaultSourceLanguage);
   }, []);
+  useEffect(() => {
+
+  localStorage.setItem(
+    "translatorDraft",
+
+    JSON.stringify({
+      inputText,
+      sourceLanguage,
+      targetLanguages,
+      style
+    })
+
+  );
+
+}, [
+  inputText,
+  sourceLanguage,
+  targetLanguages,
+  style
+]);
 
  const languages = [
   { code: "auto_detect", name: "🌐 Auto Detect" },
@@ -135,6 +173,8 @@ results[targetLang] = {
     setInputText("");
     setTranslations({});
     setError("");
+
+    localStorage.removeItem("translatorDraft");
   };
 
   return (
