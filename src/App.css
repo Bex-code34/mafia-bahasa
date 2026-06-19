@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f172a 0%, #1a2942 100%);
+  background: radial-gradient(circle at top, rgba(212,175,55,.08), transparent 30%), #050505;
 }
 
 .app-content {

@@ -35,8 +35,8 @@
 
 .style-badge {
   display: inline-block;
-  background: rgba(99, 102, 241, 0.2);
-  color: #818cf8;
+  background: rgba(64, 40, 12, 0.555);
+  color: #F4D03F;
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 12px;
@@ -46,9 +46,9 @@
 }
 
 .copy-button {
-  background: none;
-  border: 1px solid #6366f1;
-  color: #818cf8;
+  background: rgba(64, 40, 12, 0.555);
+  border: 1px solid #D4AF37;
+  color: #F4D03F;
   padding: 6px 10px;
   border-radius: 6px;
   cursor: pointer;
@@ -61,7 +61,7 @@
 
 .copy-button:hover {
   background: rgba(99, 102, 241, 0.1);
-  border-color: #818cf8;
+  border-color: #F4D03F;
 }
 
 .copy-button.copied {
@@ -82,21 +82,21 @@
 
 .translation-text {
   font-size: 15px;
-  color: #cbd5e1;
+  color: #e1d9cb;
   line-height: 1.6;
   padding: 12px;
-  background: rgba(15, 23, 42, 0.5);
+  background: rgba(212,175,55,.05);
   border-radius: 8px;
   word-wrap: break-word;
 }
 
 .romanization-text {
   font-size: 13px;
-  color: #94a3b8;
+  color: #b8ac94;
   font-style: italic;
   padding: 8px 12px;
   background: rgba(15, 23, 42, 0.3);
-  border-left: 2px solid #6366f1;
+  border-left: 2px solid #D4AF37;
   border-radius: 4px;
   word-wrap: break-word;
 }

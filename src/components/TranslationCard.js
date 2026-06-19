@@ -63,7 +63,13 @@ return (
   </div>
 
   <div className="card-content">
-    {translations.map(
+    <div className="mode-badge">
+      {translations.mode === "vocabulary"
+      ? "Vocabulary"
+      : "Sentence"}
+    </div>
+    
+    {translations.translations.map(
       (item, index) => (
         <div
           key={index}

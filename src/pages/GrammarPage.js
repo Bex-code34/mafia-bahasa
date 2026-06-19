@@ -7,6 +7,7 @@ function GrammarPage() {
   const [text, setText] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [actionMessage,setActionMessage] = useState("");
 
   const handleCheck = async () => {
     try {
@@ -33,19 +34,41 @@ function GrammarPage() {
   };
 
   const handlePaste = async () => {
-    const text = await navigator.clipboard.readText();
-    setText(text);
-  };
+  const text = await navigator.clipboard.readText();
 
-  const handleClear = () => {
-    setText("");
-    setResult(null);
-  };
+  setText(text);
 
-  const handleCopyResult = () => {
-    if (!result) return;
-    navigator.clipboard.writeText(result.corrected);
-  }
+  setActionMessage("Pasted");
+
+  setTimeout(() => {
+    setActionMessage("");
+  }, 1500);
+};
+
+ const handleClear = () => {
+  setText("");
+  setResult(null);
+
+  setActionMessage("Cleared");
+
+  setTimeout(() => {
+    setActionMessage("");
+  }, 1500);
+};
+
+ const handleCopyResult = () => {
+  if (!result) return;
+
+  navigator.clipboard.writeText(
+    result.corrected
+  );
+
+  setActionMessage("Copied");
+
+  setTimeout(() => {
+    setActionMessage("");
+  }, 1500);
+};
 
   return (
     <div className="grammar-page">
@@ -60,6 +83,13 @@ function GrammarPage() {
         placeholder="Enter text..."
         rows="5"
       />
+      {
+        actionMessage && (
+          <div className="action-toast">
+            {actionMessage}
+            </div>
+        )
+      }
 
       <div className="grammar-tools">
         <button onClick={handlePaste}>

@@ -104,7 +104,10 @@ if (sourceLanguage === "auto_detect") {
   setDetectedLanguage(result.detectedLanguage);
 }
 
-results[targetLang] = result.translations;
+results[targetLang] = {
+  mode: result.mode,
+  translations: result.translations
+};
       });
 
       await Promise.all(promises);
