@@ -29,6 +29,7 @@ export const translateWithOpenRouter = async ({
   const data = await response.json();
 
 return {
+  mode: data.mode,
   type: data.type,
   translations: data.translations,
   detectedLanguage: data.detectedLanguage

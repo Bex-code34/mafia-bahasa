@@ -6,7 +6,7 @@ import "../styles/TranslatorPage.css";
 
 function TranslatorPage({ onTranslate }) {
   const [sourceLanguage, setSourceLanguage] = useState("auto_detect");
-  const [targetLanguages, setTargetLanguages] = useState(["en"]);
+  const [targetLanguages, setTargetLanguages] = useState(settingsStorage.getTargetLanguages());
   const [inputText, setInputText] = useState("");
   const [style, setStyle] = useState("neutral");
   const [translations, setTranslations] = useState({});
@@ -37,16 +37,24 @@ function TranslatorPage({ onTranslate }) {
 ];
   const targetLanguagesList = languages.filter((l) => l.code !== "auto_detect");
 
-  const handleTargetLanguageToggle = (code) => {
-    setTargetLanguages((prev) => {
-      if (prev.includes(code)) {
-        return prev.filter((l) => l !== code);
-      } else if (prev.length < 3) {
-        return [...prev, code];
-      }
-      return prev;
-    });
-  };
+ const handleTargetLanguageToggle = (code) => {
+  setTargetLanguages((prev) => {
+
+    let updated;
+
+    if (prev.includes(code)) {
+      updated = prev.filter((l) => l !== code);
+    } else if (prev.length < 3) {
+      updated = [...prev, code];
+    } else {
+      updated = prev;
+    }
+
+    settingsStorage.setTargetLanguages(updated);
+
+    return updated;
+  });
+};
 
   const handleSwapLanguages = () => {
     if (sourceLanguage === "auto_detect") {

@@ -79,5 +79,16 @@ export const settingsStorage = {
     } catch (error) {
       console.error("Error saving settings:", error);
     }
-  }
+  },
+
+  setTargetLanguages: (languages) => {
+      const settings = settingsStorage.getSettings();
+      settings.targetLanguages = languages;
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  },
+
+  getTargetLanguages: () => {
+    const settings = settingsStorage.getSettings();
+    return (settings.targetLanguages || []);
+  },
 };

@@ -36,7 +36,7 @@ You are a professional translator.
 Return ONLY valid JSON.
 
 {
-  "text": "...",
+  "mode": "...",
   "translations": [
     {
       "text": "...",
@@ -48,6 +48,10 @@ Return ONLY valid JSON.
   ],
   "detectedLanguage": "..."
 }
+
+Return:
+- mode = "vocabulary" if input is a single word
+- mode = "sentence" if input is a sentence or phrase
 
 Rules:
 - First determine whether the input is a WORD or a SENTENCE.
@@ -74,10 +78,12 @@ WORD:
 - For Korean adjectives and verbs, return the dictionary form ending in 다.
 - For Japanese verbs, return dictionary form.
 - For German nouns, preserve capitalization.
+- For WORD inputs, ALWAYS include synonyms if applicable.
 
 SENTENCE:
 - Return 1 to 3 natural expressions.
 - NEVER force alternatives.
+- NEVER use alternative for different style of formality.
 - If only one natural expression exists, return only one.
 - If multiple common expressions exist, return up to 3.
 - Expressions must be commonly used by native speakers.
@@ -130,6 +136,7 @@ Rules:
 - Indonesian and English: romanization can be empty.
 - Korean, Japanese, Russian, Arabic and Chinese MUST ALWAYS provide romanization.
 - For German, French, Turkish and Spanish ALWAYS provide romanization even if the word is pronounced as it is written.
+- Never use dots if user didn't put dots in input.
 - Do not add explanations.
 - Do not wrap JSON in markdown.
 `
@@ -178,6 +185,7 @@ try {
 }
 
     res.json({
+  mode: parsed.mode,
   type: parsed.type || "sentence",
   translations: parsed.translations || [],
   detectedLanguage: parsed.detectedLanguage || sourceLang
@@ -213,7 +221,7 @@ app.post("/grammar", async (req, res) => {
             {
               role: "system",
               content: `
-You are a grammar correction engine.
+You are a professional grammar correction assistant.
 
 Return ONLY valid JSON:
 
@@ -240,12 +248,20 @@ Score:
 
 Corrected:
 - Grammatically correct version.
+- Keep meaning same.
+- Text book style grammar rules.
 
 NativeVersion:
 - Most natural way a native speaker would say it.
+- For native version only, Feel free to use slang, contractions, and abbreviations, but only when they are natural, context-appropriate, and commonly used by native speakers. 
+- Prioritize authenticity over excessive informality.
+- Do not add new information.
+- Do not change meaning.
+- Do not omit important details.
 
 Explanation:
 - Explain mistakes clearly in Indonesian.
+- Explanation MUST be in Indonesian, regardless the language used in input.
 `
             },
             {

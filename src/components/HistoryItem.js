@@ -63,18 +63,18 @@ function HistoryItem({ item, onDelete, languages, formatDate }) {
                 {
                   item.translations[
                     langCode
-                  ]?.translation
+                  ]?.[0]?.text
                 }
               </p>
 
               {item.translations[
                 langCode
-              ]?.romanization && (
+              ]?.[0]?.romanization && (
                 <p className="detail-romanization">
                   {
                     item.translations[
                       langCode
-                    ].romanization
+                    ]?.[0]?.romanization
                   }
                 </p>
               )}

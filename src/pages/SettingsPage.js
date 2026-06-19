@@ -81,7 +81,8 @@ function SettingsPage() {
               <li>✓ Synonyms and alternative translations</li>
               <li>✓ Multiple translation expressions</li>
               <li>✓ Literal word-for-word translations</li>
-              <li>✓ Grammar correction</li>
+              <li>✓ Grammar correction and explanation</li>
+              <li>✓ Native speaker version</li>
             </ul>
           </div>
           <div className="about-footer">
