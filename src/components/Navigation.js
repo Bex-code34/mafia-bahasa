@@ -1,4 +1,12 @@
 import React from "react";
+import {
+  LanguageIcon,
+  ClockIcon,
+  Cog6ToothIcon
+} from "@heroicons/react/24/outline"
+import {
+  DocumentCheckIcon
+} from "@heroicons/react/24/solid"
 import "../styles/Navigation.css";
 
 function Navigation({ currentPage, onPageChange }) {
@@ -9,7 +17,7 @@ function Navigation({ currentPage, onPageChange }) {
         onClick={() => onPageChange("translator")}
         title="Translator"
       >
-        <span className="nav-icon">✏️</span>
+        <span className="nav-icon"><LanguageIcon /></span>
         <span className="nav-label">Translate</span>
       </button>
       <button
@@ -17,7 +25,7 @@ function Navigation({ currentPage, onPageChange }) {
   onClick={() => onPageChange("grammar")}
   title="Grammar"
 >
-  <span className="nav-icon">📖</span>
+  <span className="nav-icon"><DocumentCheckIcon/></span>
   <span className="nav-label">Grammar</span>
 </button>
       <button
@@ -25,7 +33,7 @@ function Navigation({ currentPage, onPageChange }) {
         onClick={() => onPageChange("history")}
         title="History"
       >
-        <span className="nav-icon">⏱</span>
+        <span className="nav-icon"><ClockIcon/></span>
         <span className="nav-label">History</span>
       </button>
       <button
@@ -33,7 +41,7 @@ function Navigation({ currentPage, onPageChange }) {
         onClick={() => onPageChange("settings")}
         title="Settings"
       >
-        <span className="nav-icon">⚙</span>
+        <span className="nav-icon"><Cog6ToothIcon/></span>
         <span className="nav-label">Settings</span>
       </button>
     </nav>

@@ -55,11 +55,16 @@
 }
 
 .nav-icon {
-  font-size: 24px;
+  font-size: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: .3s;
+}
+
+.nav-icon svg {
+  width: 26px;
+  height: 26px;
 }
 
 .nav-label {

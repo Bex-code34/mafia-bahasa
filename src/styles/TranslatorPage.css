@@ -293,6 +293,8 @@
 
 .translate-button {
   background: linear-gradient(135deg, #D4AF37, #F4D03F);
+  background-size: 300% 300%;
+  animation: goldFlow 4s linear infinite;
   border: none;
   color: black;
   padding: 14px 24px;
@@ -304,6 +306,18 @@
   box-shadow: 0 0 15px rgba(212, 175, 55, .35);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+@keyframes goldFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .translate-button:hover {

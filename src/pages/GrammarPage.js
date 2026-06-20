@@ -8,7 +8,9 @@ function GrammarPage() {
   const [text, setText] = useState(savedDraft);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [actionMessage,setActionMessage] = useState("");
+  const [copiedType, setCopiedType] = useState("");
+  const [pasteSuccess, setPasteSuccess] = useState(false);
+  const [clearSuccess, setClearSuccess] = useState(false);
 
   useEffect(() => {
     localStorage.setItem("grammarDraft",text);
@@ -43,10 +45,10 @@ function GrammarPage() {
 
   setText(text);
 
-  setActionMessage("Pasted");
+  setPasteSuccess(true);
 
   setTimeout(() => {
-    setActionMessage("");
+    setPasteSuccess(false);
   }, 1500);
 };
 
@@ -54,31 +56,25 @@ function GrammarPage() {
   setText("");
   setResult(null);
   localStorage.removeItem("grammarDraft");
-  setActionMessage("Cleared");
-  setTimeout(() => {
-    setActionMessage("");
-  }, 1500);
 
-  setActionMessage("Cleared");
+  setClearSuccess(true);
 
   setTimeout(() => {
-    setActionMessage("");
+    setClearSuccess(false);
   }, 1500);
 };
 
- const handleCopyResult = (textToCopy) => {
+ const handleCopyResult = (textToCopy, type) => {
   if (!result) return;
-
   navigator.clipboard.writeText(
     textToCopy
   );
 
-  setActionMessage("Copied");
-
+  setCopiedType(type);
   setTimeout(() => {
-    setActionMessage("");
+    setCopiedType("");
   }, 1500);
-};
+ }
 
   return (
     <div className="grammar-page">
@@ -93,21 +89,24 @@ function GrammarPage() {
         placeholder="Enter text..."
         rows="5"
       />
-      {
-        actionMessage && (
-          <div className="action-toast">
-            {actionMessage}
-            </div>
-        )
-      }
-
+     
       <div className="grammar-tools">
-        <button onClick={handlePaste}>
-          Paste
+        <button onClick={handlePaste}
+        className="paste-btn">
+          {
+            pasteSuccess
+            ? "Pasted"
+            : "Paste"
+          }
         </button>
 
-        <button onClick={handleClear}>
-          Clear
+        <button onClick={handleClear}
+        className="clear-btn">
+          {
+            clearSuccess
+            ? "Cleared"
+            : "Clear"
+          }
         </button>
 
       </div>
@@ -137,9 +136,23 @@ function GrammarPage() {
   </div>
 
 <div className="grammar-tools">
-  <button onClick={() => handleCopyResult(result.corrected)}>
-    Copy
-    </button>
+ <button
+  onClick={() =>
+    handleCopyResult(
+      result.corrected,
+      "corrected"
+    )
+  }
+  className={
+    copiedType === "corrected"
+      ? "copied-btn"
+      : ""
+  }
+>
+  {copiedType === "corrected"
+    ? "Copied"
+    : "Copy"}
+</button>
   </div>
 </div>
           <div className="grammar-result-card">
@@ -152,9 +165,23 @@ function GrammarPage() {
             </div>
 
             <div className="grammar-tools">
-  <button onClick={() => handleCopyResult(result.nativeVersion)}>
-    Copy
-    </button>
+  <button
+  onClick={() =>
+    handleCopyResult(
+      result.nativeVersion,
+      "native"
+    )
+  }
+  className={
+    copiedType === "native"
+      ? "copied-btn"
+      : ""
+  }
+>
+  {copiedType === "native"
+    ? "Copied"
+    : "Copy"}
+</button>
   </div>
           </div>
 

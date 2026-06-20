@@ -86,7 +86,7 @@ function SettingsPage() {
             </ul>
           </div>
           <div className="about-footer">
-            <p className="version">Version 1.3 Learning Upgrade</p>
+            <p className="version">Version 1.4 UI Upgrade</p>
             <p className="created">Created with care for language learners</p>
             <p className="personal">Made by -H-</p>
           </div>

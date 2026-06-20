@@ -54,7 +54,9 @@
 }
 
 .grammar-page button {
-  background: linear-gradient(135deg, #D4AF37, #F4D03F);
+  background: linear-gradient(135deg, #D4AF37, #F4D03F, #FFD700, #D4AF37);
+  background-size: 300% 300%;
+  animation: goldFlow 4s linear infinite;
   color: black;
   border: none;
   border-radius: 12px;
@@ -95,6 +97,46 @@
  animation: toastSlide .25s ease;
 }
 
+.copied-btn {
+  background: #16a34a !important;
+  color: white !important;
+  border-color: #16a34a !important;
+  box-shadow: 
+    0 0 12px rgba(22,163,74,.5),
+    0 0 24px rgba(22,163,74,.25);
+}
+
+.pasted-btn {
+  background: linear-gradient(
+    135deg, #111111, #1a1a1a
+  ) !important;
+  color: #F4D03F !important;
+  border: 1px solid #D4AF37 !important;
+  animation: none !important;
+}
+
+.pasted-btn:hover {
+  box-shadow: 
+    0 0 12px rgba(212,175,55,.4),
+    0 0 24px rgba(212,175,55,.2);
+    transform: translateY(-2px);
+}
+
+.clear-btn {
+  background: rgba(239,68,68,.1) !important;
+  color: #FCA5A5 !important;
+  border: 1px solid #ef4444 !important;
+  animation: none !important;
+}
+
+.clear-btn:hover {
+  background: rgba(239,68,68,.2) !important;
+  box-shadow:
+    0 0 12px rgba(239,68,68,.4),
+    0 0 24px rgba(239,68,68,.2);
+  transform: translateY(-2px);
+}
+
 @keyframes toastSlide{
   from{
     opacity:0;
@@ -104,5 +146,17 @@
   to{
     opacity:1;
     transform:translateY(0);
+  }
+}
+
+@keyframes goldFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }

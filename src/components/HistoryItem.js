@@ -3,6 +3,7 @@ import "../styles/HistoryItem.css";
 
 function HistoryItem({ item, onDelete, languages, formatDate }) {
   const [expanded, setExpanded] = useState(false);
+  const [copiedLang, setCopiedLang] = useState(null);
   const isGrammar = item.type === "grammar";
 
   const targetLangsDisplay = isGrammar
@@ -10,6 +11,14 @@ function HistoryItem({ item, onDelete, languages, formatDate }) {
   : item.targetLanguages
     .map((code) => languages[code])
     .join(", ");
+  
+  const handleCopy = (langCode, text) => {
+    navigator.clipboard.writeText(text);
+    setCopiedLang(langCode);
+    setTimeout(() => {
+      setCopiedLang(null);
+    }, 1500);
+  };
 
   return (
     <div className="history-item">
@@ -81,16 +90,21 @@ function HistoryItem({ item, onDelete, languages, formatDate }) {
               )}
 
               <button
-  className="copy-history-button"
+  className={`copy-history-button ${
+    copiedLang === langCode ? "copied" : ""
+  }`}
   onClick={() =>
-    navigator.clipboard.writeText(
+    handleCopy(
+      langCode,
       item.translations[
         langCode
       ]?.translations?.[0]?.text || ""
     )
   }
 >
-  📋 Copy
+  {copiedLang === langCode
+    ? "✓ Copied"
+    : "📋 Copy"}
 </button>
 
             </div>

@@ -140,26 +140,25 @@
   transform: scale(0.95);
 }
 
-.copy-history-button{
-  margin-top:10px;
-  background:linear-gradient(
-    135deg,
-    #D4AF37,
-    #F4D03F
-  );
-  color:black;
-  border:none;
-  padding:8px 14px;
-  border-radius:8px;
-  font-weight:600;
-  cursor:pointer;
-  transition:.2s;
+.copy-history-button {
+  background: rgba(64,40,12,.55);
+  border: 1px solid #D4AF37;
+  color: #F4D03F;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .25s ease;
 }
 
-.copy-history-button:hover{
-  transform:translateY(-1px);
-  box-shadow:
-  0 0 10px rgba(212,175,55,.4);
+.copy-history-button:hover {
+  background: rgba(212,175,55,.15);
+  transform: translateY(-1px);
+}
+
+.copy-history-button.copied {
+  background: rgba(16,185,129,.15);
+  border-color: #10b981;
+  color: #10b981;
 }
 
 .copy-history-button:active{
