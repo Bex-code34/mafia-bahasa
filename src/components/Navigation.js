@@ -7,9 +7,13 @@ import {
 import {
   DocumentCheckIcon
 } from "@heroicons/react/24/solid"
+import { appText } from "../utils/appLanguage";
 import "../styles/Navigation.css";
 
-function Navigation({ currentPage, onPageChange }) {
+function Navigation({ currentPage, onPageChange, appLanguage }) {
+
+  const t = appText[appLanguage];
+
   return (
     <nav className="bottom-nav">
       <button
@@ -18,7 +22,7 @@ function Navigation({ currentPage, onPageChange }) {
         title="Translator"
       >
         <span className="nav-icon"><LanguageIcon /></span>
-        <span className="nav-label">Translate</span>
+        <span className="nav-label">{t.translate}</span>
       </button>
       <button
   className={`nav-button ${currentPage === "grammar" ? "active" : ""}`}
@@ -26,7 +30,7 @@ function Navigation({ currentPage, onPageChange }) {
   title="Grammar"
 >
   <span className="nav-icon"><DocumentCheckIcon/></span>
-  <span className="nav-label">Grammar</span>
+  <span className="nav-label">{t.grammar}</span>
 </button>
       <button
         className={`nav-button ${currentPage === "history" ? "active" : ""}`}
@@ -34,7 +38,7 @@ function Navigation({ currentPage, onPageChange }) {
         title="History"
       >
         <span className="nav-icon"><ClockIcon/></span>
-        <span className="nav-label">History</span>
+        <span className="nav-label">{t.history}</span>
       </button>
       <button
         className={`nav-button ${currentPage === "settings" ? "active" : ""}`}
@@ -42,7 +46,7 @@ function Navigation({ currentPage, onPageChange }) {
         title="Settings"
       >
         <span className="nav-icon"><Cog6ToothIcon/></span>
-        <span className="nav-label">Settings</span>
+        <span className="nav-label">{t.settings}</span>
       </button>
     </nav>
   );

@@ -1,16 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { getTranslation } from "../utils/translationEngine";
-import { historyStorage, settingsStorage } from "../utils/storage";
+import { historyStorage, settingsStorage, lastTranslationStorage, quotaStorage } from "../utils/storage";
 import TranslationCard from "../components/TranslationCard";
+import { appText } from "../utils/appLanguage";
 import "../styles/TranslatorPage.css";
 
-function TranslatorPage({ onTranslate }) {
+function TranslatorPage({ onTranslate, appLanguage }) {
+  const t = appText[appLanguage];
   const savedDraft = JSON.parse(localStorage.getItem("translatorDraft")) || {};
+  const settings = settingsStorage.getSettings();
+  const [quota,setQuota] = useState(quotaStorage.get());
+  const userId =
+  localStorage.getItem("mbUserId") ||
+  crypto.randomUUID();
+
+localStorage.setItem(
+  "mbUserId",
+  userId
+);
  const [sourceLanguage, setSourceLanguage] =
   useState(
     savedDraft.sourceLanguage ||
     "auto_detect"
   );
+
+const [sourceSuggestion, setSourceSuggestion] = useState(null);
 
 const [targetLanguages, setTargetLanguages] =
   useState(
@@ -28,35 +42,52 @@ const [style, setStyle] =
     savedDraft.style || "neutral"
   );
   const [translations, setTranslations] = useState({});
+  useEffect(() => {
+  const saved =
+    lastTranslationStorage.get();
+
+  if (!saved) return;
+
+  setTranslations(saved.translations);
+
+  setDetectedLanguage(
+    saved.detectedLanguage || ""
+  );
+}, []);
   const [detectedLanguage, setDetectedLanguage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("Translating...");
+  const [loadingMessage, setLoadingMessage] = useState("");
   const [error, setError] = useState("");
 
   // Load default source language from settings
+ 
   useEffect(() => {
-    const settings = settingsStorage.getSettings();
-    setSourceLanguage(settings.defaultSourceLanguage);
-  }, []);
-  useEffect(() => {
-
   localStorage.setItem(
     "translatorDraft",
-
     JSON.stringify({
       inputText,
       sourceLanguage,
       targetLanguages,
       style
     })
-
   );
-
 }, [
   inputText,
   sourceLanguage,
   targetLanguages,
   style
 ]);
+
+useEffect(() => {
+  if (!sourceSuggestion) return;
+
+  const timer = setTimeout(() => {
+    setSourceSuggestion(null);
+  }, 6000);
+
+  return () => clearTimeout(timer);
+}, [sourceSuggestion]);
 
  const languages = [
   { code: "auto_detect", name: "🌐 Auto Detect" },
@@ -118,12 +149,50 @@ const [style, setStyle] =
       return;
     }
 
+    const quota =
+    quotaStorage.get();
+
+   if (
+  process.env.NODE_ENV !== "development" &&
+  quota.translation >= 30
+) {
+      setError(
+        "Daily translation quota reached."
+      );
+      return;
+    }
+
     setError("");
+    const singleWord =
+  inputText.trim().split(/\s+/).length === 1;
+
+const loadingSequence = singleWord
+  ? [
+      "Opening vocabulary...",
+      "Analyzing word..."
+    ]
+  : [
+      "Analyzing sentence...",
+      "Building natural expression..."
+    ];
+
+setLoadingText(t.translating);
+setLoadingMessage("");
+
+loadingSequence.forEach((message, index) => {
+  setTimeout(() => {
+    setLoadingMessage(message);
+  }, (index + 1) * 1000);
+});
+
+    setSourceSuggestion(null);
     setLoading(true);
     setTranslations({});
 
     try {
       const results = {};
+      let detected = "";
+
       const promises = targetLanguages.map(async (targetLang) => {
        const result = await getTranslation(
   inputText,
@@ -132,6 +201,26 @@ const [style, setStyle] =
   style
 );
 
+if (
+  sourceLanguage !== "auto_detect" &&
+  result.detectedLanguage &&
+  result.detectedLanguage !== sourceLanguage
+) {
+
+  setSourceSuggestion(
+    result.detectedLanguage
+  );
+
+  setTimeout(() => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}, 100);
+
+  throw new Error("SOURCE_MISMATCH");
+}
+
 console.log("FULL RESULT:");
 console.log(JSON.stringify(result, null, 2));
 
@@ -139,17 +228,37 @@ console.log("TRANSLATIONS:");
 console.log(result.translations);
 
 if (sourceLanguage === "auto_detect") {
-  setDetectedLanguage(result.detectedLanguage);
+  detected = 
+  result.detectedLanguage;
+
+  setDetectedLanguage(
+    result.detectedLanguage
+  );
 }
 
 results[targetLang] = {
   mode: result.mode,
-  translations: result.translations
+  translations:
+    result.translations?.length > 0
+      ? result.translations
+      : [
+          {
+            type: "unknown",
+            text: "Input tidak dapat dikenali.",
+            note: "Teks tampaknya berupa karakter acak atau tidak memiliki makna."
+          }
+        ]
 };
       });
 
       await Promise.all(promises);
       setTranslations(results);
+      quotaStorage.addTranslation();
+      setQuota(quotaStorage.get());
+      lastTranslationStorage.save({
+        translations: results,
+        detectedLanguage: detected
+      });
       console.log(translations);
 
       // Save to history
@@ -162,14 +271,25 @@ results[targetLang] = {
       });
       onTranslate();
     } catch (err) {
-      setError("Translation failed. Please try again.");
+      if (
+        err.message === "SOURCE_MISMATCH"
+      ) {
+        return;
+      }
+
+      setError(
+        "Translation failed. Please try again."
+      );
       console.error(err);
+
     } finally {
       setLoading(false);
+      setLoadingMessage("");
     }
   };
 
   const handleClearInput = () => {
+    lastTranslationStorage.clear();
     setInputText("");
     setTranslations({});
     setError("");
@@ -181,10 +301,10 @@ results[targetLang] = {
     <div className="translator-page">
       {/* Source Language Section */}
       <div className="card language-selector-card">
-        <label className="label">Source Language</label>
+        <label className="label">{t.sourceTitleCard}</label>
         {sourceLanguage === "auto_detect" && detectedLanguage && (
           <div className="detected-language">
-            Detected: {detectedLanguage.toUpperCase()}
+            {t.detected} {detectedLanguage.toUpperCase()}
           </div>
         )}
         <select
@@ -198,6 +318,27 @@ results[targetLang] = {
             </option>
           ))}
         </select>
+
+        {sourceSuggestion && (
+  <div className="detected-language">
+
+    {t.looksLike} {
+      sourceSuggestion.toUpperCase()
+    } {t.switchSource}
+
+    <button
+      onClick={() => {
+        setSourceLanguage(
+          sourceSuggestion
+        );
+        setSourceSuggestion(null);
+      }}
+    >
+      {t.switchBtn}
+    </button>
+
+  </div>
+)}
       </div>
 
       {/* Swap Button */}
@@ -214,26 +355,26 @@ results[targetLang] = {
       {/* Text Input Section */}
       <div className="card input-card">
         <div className="input-header">
-          <label className="label">Your Text</label>
-          <span className="character-count">{inputText.length} / 500</span>
+          <label className="label">{t.textTitle}</label>
+          <span className="character-count">{inputText.length} / 1000</span>
         </div>
         <textarea
           value={inputText}
-          onChange={(e) => setInputText(e.target.value.slice(0, 500))}
-          placeholder="Enter text to translate..."
+          onChange={(e) => setInputText(e.target.value.slice(0, 1000))}
+          placeholder={t.enterText}
           className="textarea-input"
-          maxLength="500"
-          rows="4"
+          maxLength="1000"
+          rows="6"
         />
         <button onClick={handleClearInput} className="clear-button">
-          Clear Input
+          {t.clearInput}
         </button>
       </div>
 
       {/* Target Languages Section */}
       <div className="card target-languages-card">
         <label className="label">
-          Target Languages (Max 3): {targetLanguages.length}/3
+          {t.targetLang}: {targetLanguages.length}/3
         </label>
         <div className="language-checkboxes">
           {targetLanguagesList.map((lang) => (
@@ -256,7 +397,7 @@ results[targetLang] = {
 
       {/* Style Selector */}
       <div className="card style-selector-card">
-        <label className="label">Translation Style</label>
+        <label className="label">{t.formalStyle}</label>
         <div className="style-buttons">
           {["casual", "neutral", "formal"].map((s) => (
             <button
@@ -274,13 +415,24 @@ results[targetLang] = {
       {error && <div className="error-message">{error}</div>}
 
       {/* Translate Button */}
+      <div className="quota-info">
+        Free quota:
+        {30 - quota.translation}/30
+      </div>
+
       <button
         onClick={handleTranslate}
         disabled={loading}
         className="translate-button"
       >
-        {loading ? "Translating..." : "Translate"}
+        {loading ? loadingText : t.translate}
       </button>
+
+      {loading && loadingMessage && (
+        <div className="translate-loading-text">
+          {loadingMessage}
+          </div>
+      )}
 
       {/* Loading Spinner */}
       {loading && <div className="loading-spinner"></div>}

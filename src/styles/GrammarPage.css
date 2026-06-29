@@ -1,17 +1,17 @@
 .grammar-score-card {
-  background: #111111;
-  border: 1px solid #D4AF37;
-  border-radius: 16px;
-  padding: 20px;
-  margin-top: 20px;
+  color: rgb(1, 0, 0);
+  padding: 35px;
+  border-radius: 18px;
   text-align: center;
-  box-shadow: 0 0 25px rgba(212, 175, 55, .12);
+  margin-bottom: 20px;
+  margin-top: 20px;
+  border: 4px solid rgba(255,255,255,.25);
 }
 
 .grammar-score {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #f4d03f;
+  font-size: 26px;
+  font-weight: 700;
+  opacity: .9;
 }
 
 .grammar-result-card {
@@ -64,6 +64,48 @@
   font-weight: 600;
   cursor: pointer;
   transition: all .25s ease
+}
+
+.grammar-score-card.perfect {
+  background: #1ba23b;
+}
+
+.grammar-score-card.minormistakes {
+  background: #1d4abb;
+}
+
+.grammar-score-card.good {
+  background: #a4b017;
+}
+
+.grammar-score-card.average {
+  background: #b56e03;
+}
+
+.grammar-score-card.bad {
+  background: #b91929;
+}
+
+.grammar-score-card {
+  color: rgb(14, 11, 11);
+  padding: 25px;
+  border-radius: 16px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.grammar-score-card h3 {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+
+.translate-loading-text,
+.grammar-loading-text {
+  margin-top: 12px;
+  text-align: center;
+  opacity: 0.8;
+  font-size: 14px;
 }
 
 .grammar-page button:hover{

@@ -8,18 +8,22 @@ export const translateWithOpenRouter = async ({
   targetLang,
   style
 }) => {
-  const response = await fetch("/translate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      input,
-      sourceLang,
-      targetLang,
-      style
-    })
-  });
+  const userId =
+  localStorage.getItem("mbUserId");
+
+const response = await fetch("/translate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    input,
+    sourceLang,
+    targetLang,
+    style,
+    userId
+  })
+});
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -40,16 +44,20 @@ export const checkGrammarWithOpenRouter = async ({
   text,
   language
 }) => {
-  const response = await fetch("/grammar", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      text,
-      language
-    })
-  });
+ const userId =
+  localStorage.getItem("mbUserId");
+
+const response = await fetch("/grammar", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    text,
+    language,
+    userId
+  })
+});
 
   if (!response.ok) {
     const errorText = await response.text();

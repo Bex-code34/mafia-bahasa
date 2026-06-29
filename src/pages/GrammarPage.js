@@ -1,24 +1,57 @@
 import React, { useState, useEffect } from "react";
 import { checkGrammar } from "../utils/translationEngine";
-import { historyStorage } from "../utils/storage";
+import { historyStorage, quotaStorage } from "../utils/storage";
+import { appText } from "../utils/appLanguage";
 import "../styles/GrammarPage.css";
 
-function GrammarPage() {
-  const savedDraft = localStorage.getItem("grammarDraft") || "";
+function GrammarPage({appLanguage}) {
+  const savedDraft = localStorage.getItem("grammarDraft") ?? "";
   const [text, setText] = useState(savedDraft);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("Checking...");
+  const [loadingMessage, setLoadingMessage] = useState("");
   const [copiedType, setCopiedType] = useState("");
   const [pasteSuccess, setPasteSuccess] = useState(false);
   const [clearSuccess, setClearSuccess] = useState(false);
+  const [quota,setQuota] = useState(quotaStorage.get());
+  const t = appText[appLanguage];
 
   useEffect(() => {
     localStorage.setItem("grammarDraft",text);
   }, [text]);
 
   const handleCheck = async () => {
+    const quota = 
+    quotaStorage.get();
+
+    if (
+  process.env.NODE_ENV !== "development" &&
+  quota.grammar >= 10
+) {
+      alert(
+        "Daily grammar quota reached."
+      );
+      return;
+    }
     try {
-      setLoading(true);
+      const loadingMessages = [
+  "Calling grammar master...",
+  "Fixing grammar...",
+  "Checking native usage...",
+  "Analyzing mistakes..."
+];
+
+setLoadingText(t.checking);
+setLoadingMessage("");
+setLoading(true);
+
+loadingMessages.forEach((message, index) =>
+{
+  setTimeout(() => {
+    setLoadingMessage(message);
+  }, (index + 1) * 1500);
+});
 
       const data = await checkGrammar(
         text,
@@ -26,6 +59,8 @@ function GrammarPage() {
       );
 
       setResult(data);
+      quotaStorage.addGrammar();
+      setQuota(quotaStorage.get());
       historyStorage.add({
         type: "grammar",
         text,
@@ -37,13 +72,15 @@ function GrammarPage() {
       console.error(error);
     } finally {
       setLoading(false);
+      setLoadingMessage("");
     }
   };
 
   const handlePaste = async () => {
-  const text = await navigator.clipboard.readText();
+  const clipboardText = 
+  await navigator.clipboard.readText();
 
-  setText(text);
+  setText(clipboardText);
 
   setPasteSuccess(true);
 
@@ -79,14 +116,14 @@ function GrammarPage() {
   return (
     <div className="grammar-page">
 
-      <h2>Grammar Assistant</h2>
+      <h2>{t.grammarAssistant}</h2>
 
       <textarea
         value={text}
         onChange={(e) =>
           setText(e.target.value)
         }
-        placeholder="Enter text..."
+        placeholder={t.enterText}
         rows="5"
       />
      
@@ -95,8 +132,8 @@ function GrammarPage() {
         className="paste-btn">
           {
             pasteSuccess
-            ? "Pasted"
-            : "Paste"
+            ? t.pasteActive
+            : t.paste
           }
         </button>
 
@@ -104,28 +141,69 @@ function GrammarPage() {
         className="clear-btn">
           {
             clearSuccess
-            ? "Cleared"
-            : "Clear"
+            ? t.clearActive
+            : t.clear
           }
         </button>
 
       </div>
 
-      <button onClick={handleCheck}>
+    <div className="quota-info">
+      Grammar:
+      {10 - quota.grammar}/10
+    </div>
+
+      <button onClick={handleCheck}
+      disabled={loading}
+      >
         {loading
-          ? "Checking..."
-          : "Check Grammar"}
+          ? loadingText
+        : t.checkGrammar
+        }
       </button>
+
+      {loading && loadingMessage && (
+        <div className="grammar-loading-text">
+          {loadingMessage}
+          </div>
+      )}
 
      {result && (
   <div>
 
-    <div className="grammar-score-card">
-      <h3>Grammar Score</h3>
-      <div className="grammar-score">
-        {result.score}/100
-      </div>
-    </div>
+   <div
+  className={`grammar-score-card ${
+    result.score === 100
+      ? "perfect"
+      : result.score >= 90
+      ? "minormistakes"
+      : result.score >= 70
+      ? "good"
+      : result.score >= 50
+      ? "average"
+      : "bad"
+  }`}
+>
+
+  <h3>
+    {
+      result.score === 100
+        ? t.perfect
+        : result.score >= 90
+        ? t.minorMistakes
+        : result.score >= 70
+        ? t.good
+        : result.score >= 50
+        ? t.average
+        : t.bad
+    }
+  </h3>
+
+  <div className="grammar-score">
+    {result.score}/100
+  </div>
+
+</div>
 
          <div className="grammar-result-card">
   <div className="grammar-result-title">
@@ -150,8 +228,8 @@ function GrammarPage() {
   }
 >
   {copiedType === "corrected"
-    ? "Copied"
-    : "Copy"}
+    ? t.copyActive
+    : t.copy}
 </button>
   </div>
 </div>
@@ -160,15 +238,19 @@ function GrammarPage() {
               🗣 Native Speaker Version
             </div>
 
-            <div className="grammar-result-text">
-              {result.nativeVersion}
+           <div className="grammar-result-text">
+            {result.nativeVersion.map((item, index) => (
+              <div key={index}>
+                {index + 1}. {item}
+                </div>
+            ))}
             </div>
 
             <div className="grammar-tools">
   <button
   onClick={() =>
     handleCopyResult(
-      result.nativeVersion,
+      result.nativeVersion.join("\n"),
       "native"
     )
   }
@@ -179,8 +261,8 @@ function GrammarPage() {
   }
 >
   {copiedType === "native"
-    ? "Copied"
-    : "Copy"}
+    ? t.copyActive
+    : t.copy}
 </button>
   </div>
           </div>

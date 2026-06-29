@@ -1,6 +1,8 @@
 // Local storage management for history and settings
 const HISTORY_KEY = "mafiabahasaHistory";
 const SETTINGS_KEY = "mafiabahasaSettings";
+const QUOTA_KEY = "mafiabahasaQuota";
+const LAST_TRANSLATION_KEY = "mafiabahasaLastTranslation";
 
 export const historyStorage = {
   getAll: () => {
@@ -65,11 +67,37 @@ export const settingsStorage = {
   getSettings: () => {
     try {
       const data = localStorage.getItem(SETTINGS_KEY);
-      return data ? JSON.parse(data) : { defaultSourceLanguage: "auto_detect" };
+      return data ? JSON.parse(data) : { defaultSourceLanguage: "auto_detect",
+        appLanguage: "id"
+       };
     } catch {
-      return { defaultSourceLanguage: "auto_detect" };
+      return { defaultSourceLanguage: "auto_detect", appLanguage: "id" };
     }
   },
+
+  setAppLanguage: (language) => {
+    try {
+  const settings =
+    settingsStorage.getSettings();
+
+  settings.appLanguage =
+    language;
+
+  localStorage.setItem(
+    SETTINGS_KEY,
+    JSON.stringify(settings)
+  );
+} catch (error) {
+  console.error(error);
+}
+},
+
+getAppLanguage: () => {
+  const settings =
+    settingsStorage.getSettings();
+
+  return settings.appLanguage || "id";
+},
 
   setDefaultSourceLanguage: (language) => {
     try {
@@ -91,4 +119,87 @@ export const settingsStorage = {
     const settings = settingsStorage.getSettings();
     return (settings.targetLanguages || []);
   },
+};
+
+export const lastTranslationStorage = {
+  save: (data) => {
+    localStorage.setItem(
+      LAST_TRANSLATION_KEY,
+      JSON.stringify(data)
+    );
+  },
+
+  get: () => {
+    const data =
+      localStorage.getItem(
+        LAST_TRANSLATION_KEY
+      );
+
+    return data
+      ? JSON.parse(data)
+      : null;
+  },
+
+  clear: () => {
+    localStorage.removeItem(
+      LAST_TRANSLATION_KEY
+    );
+  }
+};
+
+export const quotaStorage = {
+  get: () => {
+    const today =
+      new Date().toDateString();
+
+    const saved =
+      localStorage.getItem(
+        QUOTA_KEY
+      );
+
+    if (!saved) {
+      return {
+        date: today,
+        translation: 0,
+        grammar: 0
+      };
+    }
+
+    const data =
+      JSON.parse(saved);
+
+    if (data.date !== today) {
+      return {
+        date: today,
+        translation: 0,
+        grammar: 0
+      };
+    }
+
+    return data;
+  },
+
+  addTranslation: () => {
+    const data =
+      quotaStorage.get();
+
+    data.translation += 1;
+
+    localStorage.setItem(
+      QUOTA_KEY,
+      JSON.stringify(data)
+    );
+  },
+
+  addGrammar: () => {
+    const data =
+      quotaStorage.get();
+
+    data.grammar += 1;
+
+    localStorage.setItem(
+      QUOTA_KEY,
+      JSON.stringify(data)
+    );
+  }
 };

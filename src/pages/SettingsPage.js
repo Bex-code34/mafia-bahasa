@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { settingsStorage } from "../utils/storage";
+import { appText } from "../utils/appLanguage";
 import "../styles/SettingsPage.css";
 
-function SettingsPage() {
+function SettingsPage({
+  appLanguage, 
+  setAppLanguage
+}) {
   const [defaultLanguage, setDefaultLanguage] = useState("auto_detect");
   const [saveMessage, setSaveMessage] = useState("");
+  const [languageMessage, setLanguageMessage] = useState("");
+  const t = appText[appLanguage];
 
   const languages = [
     { code: "auto_detect", name: "Auto Detect" },
@@ -23,22 +29,32 @@ function SettingsPage() {
 
   useEffect(() => {
     const settings = settingsStorage.getSettings();
-    setDefaultLanguage(settings.defaultSourceLanguage);
+
+    setDefaultLanguage(
+      settings.defaultSourceLanguage
+    );
   }, []);
 
   const handleSaveSettings = () => {
     settingsStorage.setDefaultSourceLanguage(defaultLanguage);
-    setSaveMessage("✓ Settings saved successfully!");
-    setTimeout(() => setSaveMessage(""), 3000);
+    settingsStorage.setAppLanguage(appLanguage);
+
+    setLanguageMessage("");
+
+    setSaveMessage(t.settingsUpdated);
+    
+    setTimeout(() => {
+      setSaveMessage("");
+     }, 3000);
   };
 
   return (
     <div className="settings-page">
       {/* Default Source Language Section */}
       <div className="card settings-card">
-        <h2 className="settings-section-title">Default Source Language</h2>
+        <h2 className="settings-section-title">{t.sourceTitle}</h2>
         <p className="settings-description">
-          Choose your preferred source language for new translations
+          {t.sourceDescription}
         </p>
         <select
           value={defaultLanguage}
@@ -52,22 +68,69 @@ function SettingsPage() {
           ))}
         </select>
         <button onClick={handleSaveSettings} className="save-button">
-          💾 Save Settings
+          {t.saveBtn}
         </button>
         {saveMessage && <div className="save-message">{saveMessage}</div>}
       </div>
 
+   <div className="card settings-card">
+<h2 className="settings-section-title">{t.appTitle}</h2>
+<p className="settings-description">
+    {t.appDescription}
+  </p>
+<select
+  value={appLanguage}
+  onChange={(e) => {
+ 
+    const lang =
+      e.target.value;
+
+    const confirmed = window.confirm(
+      t.confirmLanguageChange
+    );
+
+    if (!confirmed) return;
+
+    setAppLanguage(lang);
+
+    settingsStorage
+      .setAppLanguage(lang);
+
+    setSaveMessage("");
+
+    setLanguageMessage(
+      t.appUpdated
+    );
+
+    setTimeout(() => {
+      setLanguageMessage("");
+    }, 3000);
+
+  }}
+  className="select-input"
+>
+    <option value="id">
+      🇮🇩 Indonesian
+    </option>
+
+    <option value="en">
+      🇬🇧 English
+    </option>
+
+  </select>
+  {languageMessage && (<div className="save-message">{languageMessage}</div>)}
+
+</div>
+
       {/* About Section */}
       <div className="card about-card">
-        <h2 className="settings-section-title">About Mafia Bahasa</h2>
+        <h2 className="settings-section-title">{t.aboutTitle}</h2>
         <div className="about-content">
           <p>
-            <strong>Mafia Bahasa</strong> is a modern language learning
-            translator designed to help you understand how sentences and words change
-            across multiple languages with different nuancesand formality levels.
+            <strong>Mafia Bahasa</strong> {t.aboutDescription}
           </p>
           <div className="about-features">
-            <h3>Features:</h3>
+            <h3>{t.feature}</h3>
             <ul>
               <li>✓ Support for 11 languages</li>
               <li>✓ Casual / Neutral / Formal styles</li>
@@ -86,9 +149,9 @@ function SettingsPage() {
             </ul>
           </div>
           <div className="about-footer">
-            <p className="version">Version 1.4 UI Upgrade</p>
-            <p className="created">Created with care for language learners</p>
-            <p className="personal">Made by -H-</p>
+            <p className="version">{t.version} 1.5</p>
+            <p className="created">{t.created}</p>
+            <p className="personal">{t.made}</p>
           </div>
         </div>
       </div>

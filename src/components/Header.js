@@ -1,7 +1,10 @@
 import React from "react";
+import { appText } from "../utils/appLanguage";
 import "../styles/Header.css";
 
-function Header() {
+function Header({appLanguage}) {
+const t = appText[appLanguage];
+
   return (
     <header className="app-header">
       <div className="brand-container">
@@ -18,7 +21,7 @@ function Header() {
     </h1>
 
     <p className="app-subtitle">
-      Your Language Journey Partner
+      {t.subtitle}
     </p>
   </div>
 

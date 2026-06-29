@@ -5,11 +5,19 @@ import TranslatorPage from "./pages/TranslatorPage";
 import GrammarPage from "./pages/GrammarPage";
 import HistoryPage from "./pages/HistoryPage";
 import SettingsPage from "./pages/SettingsPage";
+import { settingsStorage } from "./utils/storage";
 import "./App.css";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("translator");
   const [historyRefresh, setHistoryRefresh] = useState(0);
+  const [appLanguage, setAppLanguage] = useState(settingsStorage.getAppLanguage());
+
+  useEffect(() => {
+    setAppLanguage(
+      settingsStorage.getAppLanguage()
+    );
+  }, []);
 
   const triggerHistoryRefresh = () => {
     setHistoryRefresh((prev) => prev + 1);
@@ -17,18 +25,37 @@ function App() {
 
   return (
     <div className="app">
-      <Header />
+      <Header 
+      appLanguage={
+        appLanguage
+      }
+      />
       <div className="app-content">
         {currentPage === "translator" && (
-          <TranslatorPage onTranslate={triggerHistoryRefresh} />
+          <TranslatorPage 
+          onTranslate={triggerHistoryRefresh} 
+          appLanguage={appLanguage}
+          />
         )}
         {currentPage === "history" && (
-          <HistoryPage key={historyRefresh} />
+          <HistoryPage 
+          key={historyRefresh}
+          appLanguage={appLanguage}  
+          />
         )}
-        {currentPage === "grammar" && <GrammarPage />}
-        {currentPage === "settings" && <SettingsPage />}
+        {currentPage === "grammar" && <GrammarPage 
+        appLanguage={appLanguage}
+        />}
+        {currentPage === "settings" && <SettingsPage 
+        appLanguage={appLanguage}
+        setAppLanguage={setAppLanguage}
+        />}
       </div>
-      <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
+      <Navigation
+       currentPage={currentPage}
+       onPageChange={setCurrentPage}
+       appLanguage={appLanguage} 
+       />
     </div>
   );
 }

@@ -30,6 +30,8 @@ new SpeechSynthesisUtterance(text);
 utterance.lang =
   voiceMap[languageCode] || "en-US";
 
+window.speechSynthesis.cancel();
+
 window.speechSynthesis.speak(
   utterance
 );
@@ -76,9 +78,7 @@ return (
           className="translation-variant"
         >
           <div className="translation-text">
-            {index === 0
-              ? item.text
-              : `Alt ${index}: ${item.text}`}
+            {item.text}
           </div>
 
           {item.romanization && (
@@ -97,7 +97,7 @@ return (
     "📚 Synonym"}
 </div>
 
-          {item.note && (
+          {item.note?.trim() && (
             <div className="note-text">
               💡 {item.note}
             </div>

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { historyStorage } from "../utils/storage";
 import HistoryItem from "../components/HistoryItem";
+import { appText } from "../utils/appLanguage";
 import "../styles/HistoryPage.css";
 
-function HistoryPage() {
+function HistoryPage({appLanguage}) {
+  const t = appText[appLanguage];
   const [history, setHistory] = useState([]);
   const [showDeleteAll, setShowDeleteAll] = useState(false);
 
@@ -60,36 +62,36 @@ function HistoryPage() {
       {history.length === 0 ? (
         <div className="empty-state">
           <p className="empty-icon">📝</p>
-          <p className="empty-text">No translation history yet</p>
-          <p className="empty-subtext">Start translating to build your history</p>
+          <p className="empty-text">{t.noHistory}</p>
+          <p className="empty-subtext">{t.startHistory}</p>
         </div>
       ) : (
         <>
           <div className="history-controls">
-            <h2 className="history-title">Translation History</h2>
+            <h2 className="history-title">{t.historyTitle}</h2>
             <button
               onClick={() => setShowDeleteAll(!showDeleteAll)}
               className="delete-all-button"
             >
-              🗑 Delete All
+              {t.deleteAll}
             </button>
           </div>
 
           {showDeleteAll && (
             <div className="delete-confirm">
-              <p>Delete all history?</p>
+              <p>{t.deleteAllHistory}</p>
               <div className="confirm-buttons">
                 <button
                   onClick={handleDeleteAll}
                   className="confirm-delete-button"
                 >
-                  Delete All
+                  {t.deleteAllConfirm}
                 </button>
                 <button
                   onClick={() => setShowDeleteAll(false)}
                   className="confirm-cancel-button"
                 >
-                  Cancel
+                  {t.cancel}
                 </button>
               </div>
             </div>
