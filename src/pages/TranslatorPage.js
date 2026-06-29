@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getTranslation } from "../utils/translationEngine";
 import { historyStorage, settingsStorage, lastTranslationStorage, quotaStorage } from "../utils/storage";
 import TranslationCard from "../components/TranslationCard";
@@ -8,7 +8,6 @@ import "../styles/TranslatorPage.css";
 function TranslatorPage({ onTranslate, appLanguage }) {
   const t = appText[appLanguage];
   const savedDraft = JSON.parse(localStorage.getItem("translatorDraft")) || {};
-  const settings = settingsStorage.getSettings();
   const [quota,setQuota] = useState(quotaStorage.get());
   const userId =
   localStorage.getItem("mbUserId") ||
@@ -25,6 +24,7 @@ localStorage.setItem(
   );
 
 const [sourceSuggestion, setSourceSuggestion] = useState(null);
+const [pendingTranslate, setPendingTranslate] = useState(false);
 
 const [targetLanguages, setTargetLanguages] =
   useState(
@@ -42,6 +42,20 @@ const [style, setStyle] =
     savedDraft.style || "neutral"
   );
   const [translations, setTranslations] = useState({});
+  const resultRef = useRef(null);
+  useEffect(() => {
+  if (
+    Object.keys(translations)
+      .length > 0
+  ) {
+    setTimeout(() => {
+      resultRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 300);
+  }
+}, [translations]);
   useEffect(() => {
   const saved =
     lastTranslationStorage.get();
@@ -312,6 +326,19 @@ else {
     }
   };
 
+   useEffect(() => {
+    if (
+      pendingTranslate && 
+      sourceLanguage
+    ) {
+      handleTranslate();
+      setPendingTranslate(false);
+    }
+  }, [
+    sourceLanguage,
+    pendingTranslate
+  ]);
+
   const handleClearInput = () => {
     lastTranslationStorage.clear();
     setInputText("");
@@ -350,14 +377,17 @@ else {
       sourceSuggestion.toUpperCase()
     } {t.switchSource}
 
-    <button
-      onClick={() => {
-        setSourceLanguage(
-          sourceSuggestion
-        );
-        setSourceSuggestion(null);
-      }}
-    >
+   <button
+  onClick={() => {
+    setSourceLanguage(
+      sourceSuggestion
+    );
+
+    setSourceSuggestion(null);
+
+    setPendingTranslate(true);
+  }}
+>
       {t.switchBtn}
     </button>
 
@@ -401,21 +431,33 @@ else {
           {t.targetLang}: {targetLanguages.length}/3
         </label>
         <div className="language-checkboxes">
-          {targetLanguagesList.map((lang) => (
-            <label key={lang.code} className="checkbox-label">
-              <input
-                type="checkbox"
-                checked={targetLanguages.includes(lang.code)}
-                onChange={() => handleTargetLanguageToggle(lang.code)}
-                disabled={
-                  !targetLanguages.includes(lang.code) &&
-                  targetLanguages.length >= 3
-                }
-                className="checkbox-input"
-              />
-              <span className="checkbox-text">{lang.name}</span>
-            </label>
-          ))}
+         {targetLanguagesList.map((lang) => (
+  <button
+    key={lang.code}
+    onClick={() =>
+      handleTargetLanguageToggle(
+        lang.code
+      )
+    }
+
+    className={`language-pill ${
+      targetLanguages.includes(
+        lang.code
+      )
+        ? "active"
+        : ""
+    }`}
+
+    disabled={
+      !targetLanguages.includes(
+        lang.code
+      ) &&
+      targetLanguages.length >= 3
+    }
+  >
+    {lang.name}
+  </button>
+))}
         </div>
       </div>
 
@@ -462,7 +504,9 @@ else {
       {loading && <div className="loading-spinner"></div>}
 
       {/* Translation Results */}
-      <div className="translations-container">
+      <div 
+      ref={resultRef}
+      className="translations-container">
        {Object.entries(translations).map(([langCode, data]) => {
   const langName = languages.find(
     (l) => l.code === langCode

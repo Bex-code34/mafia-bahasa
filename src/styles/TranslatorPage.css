@@ -396,6 +396,52 @@
   font-weight:600;
 }
 
+.language-checkboxes {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.language-pill {
+  background:#111;
+
+  border:1px solid #555;
+
+  color:#ccc;
+
+  padding:10px 14px;
+
+  border-radius:12px;
+
+  cursor:pointer;
+
+  transition:.2s;
+}
+
+.language-pill:hover {
+  border-color:#D4AF37;
+}
+
+.language-pill.active {
+  background:
+    linear-gradient(
+      135deg,
+      #D4AF37,
+      #F4D03F
+    );
+
+  color:black;
+
+  border:none;
+
+  font-weight:600;
+}
+
+.language-pill:disabled {
+  opacity:.4;
+  cursor:not-allowed;
+}
+
 @media (min-width: 768px) {
   .card {
     padding: 20px;
