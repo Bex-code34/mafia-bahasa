@@ -253,8 +253,11 @@ results[targetLang] = {
 
       await Promise.all(promises);
       setTranslations(results);
+      if (process.env.NODE_ENV !==
+        "development") {
       quotaStorage.addTranslation();
       setQuota(quotaStorage.get());
+        }
       lastTranslationStorage.save({
         translations: results,
         detectedLanguage: detected
@@ -277,9 +280,30 @@ results[targetLang] = {
         return;
       }
 
-      setError(
-        "Translation failed. Please try again."
-      );
+      if (err.code === "OPENROUTER_ERROR") {
+  setError(
+    "AI server sedang sibuk."
+  );
+}
+else if (
+  err.code === "INVALID_AI_RESPONSE"
+) {
+  setError(
+    "AI memberikan jawaban tidak valid."
+  );
+}
+else if (
+  err.code === "TRANSLATION_FAILED"
+) {
+  setError(
+    "Terjadi kesalahan saat menerjemahkan."
+  );
+}
+else {
+  setError(
+    "Koneksi gagal."
+  );
+}
       console.error(err);
 
     } finally {

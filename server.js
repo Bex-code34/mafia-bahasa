@@ -367,7 +367,8 @@ if (!response.ok) {
   console.error(data);
 
     return res.status(500).json({
-      error:
+      code: "OPENROUTER_ERROR",
+      error: 
       data.error?.message ||
       "OpenRouter request failed"
     });
@@ -396,7 +397,7 @@ try {
   console.error(cleaned);
 
   return res.status(500).json({
-    raw: cleaned,
+    code: "INVALID_AI_RESPONSE",
     error: "Invalid AI response"
   });
 }
@@ -412,7 +413,8 @@ console.log("DETECTED:", parsed.detectedLanguage);
   } catch (error) {
     console.error(error);
     res.status(500).json({
-      error: "Translation failed"
+      code: "TRANSLATION_FAILED",
+      error: error.message
     });
   }
 });
@@ -610,14 +612,18 @@ ABSOLUTE RULES:
         .trim();
       parsed = JSON.parse(cleaned);
     } catch {
-      return res.status(500).json({ error: "AI returned invalid JSON" });
+      return res.status(500).json({ 
+        code: "INVALID_AI_RESPONSE",
+        error: "AI returned invalid JSON" 
+      });
     }
 
     return res.json(parsed);
 
   } catch (error) {
     return res.status(500).json({
-      error: "Grammar check failed"
+      code: "GRAMMAR_FAILED",
+      error: error.message
     });
   }
 });

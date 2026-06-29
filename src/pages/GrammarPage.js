@@ -5,9 +5,16 @@ import { appText } from "../utils/appLanguage";
 import "../styles/GrammarPage.css";
 
 function GrammarPage({appLanguage}) {
-  const savedDraft = localStorage.getItem("grammarDraft") ?? "";
-  const [text, setText] = useState(savedDraft);
-  const [result, setResult] = useState(null);
+ const savedDraft =
+  JSON.parse(
+    localStorage.getItem("grammarDraft")
+  ) || {};
+
+const [text, setText] =
+  useState(savedDraft.text || "");
+
+const [result, setResult] =
+  useState(savedDraft.result || null);
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("Checking...");
   const [loadingMessage, setLoadingMessage] = useState("");
@@ -15,13 +22,21 @@ function GrammarPage({appLanguage}) {
   const [pasteSuccess, setPasteSuccess] = useState(false);
   const [clearSuccess, setClearSuccess] = useState(false);
   const [quota,setQuota] = useState(quotaStorage.get());
+  const [error, setError] = useState("");
   const t = appText[appLanguage];
 
-  useEffect(() => {
-    localStorage.setItem("grammarDraft",text);
-  }, [text]);
+ useEffect(() => {
+  localStorage.setItem(
+    "grammarDraft",
+    JSON.stringify({
+      text,
+      result
+    })
+  );
+}, [text, result]);
 
   const handleCheck = async () => {
+    setError("");
     const quota = 
     quotaStorage.get();
 
@@ -59,8 +74,11 @@ loadingMessages.forEach((message, index) =>
       );
 
       setResult(data);
+      if (process.env.NODE_ENV !==
+        "development") {
       quotaStorage.addGrammar();
       setQuota(quotaStorage.get());
+        }
       historyStorage.add({
         type: "grammar",
         text,
@@ -70,6 +88,26 @@ loadingMessages.forEach((message, index) =>
       });
     } catch (error) {
       console.error(error);
+
+if (
+  error.code === "OPENROUTER_ERROR"
+) {
+  setError(
+    "AI server sedang sibuk."
+  );
+}
+else if (
+  error.code === "INVALID_AI_RESPONSE"
+) {
+  setError(
+    "AI memberikan respons tidak valid."
+  );
+}
+else {
+  setError(
+    "Grammar checker gagal."
+  );
+}
     } finally {
       setLoading(false);
       setLoadingMessage("");
@@ -161,6 +199,12 @@ loadingMessages.forEach((message, index) =>
         : t.checkGrammar
         }
       </button>
+
+      {error && (
+        <div className="error-message">
+          {error}
+          </div>
+      )}
 
       {loading && loadingMessage && (
         <div className="grammar-loading-text">

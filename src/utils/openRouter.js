@@ -26,8 +26,13 @@ const response = await fetch("/translate", {
 });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Backend error: ${errorText}`);
+    const errorData =
+    await response.json();
+
+    throw {
+      code: errorData.code,
+      message: errorData.error
+    };
   }
 
   const data = await response.json();
@@ -60,8 +65,13 @@ const response = await fetch("/grammar", {
 });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Backend error: ${errorText}`);
+    const errorData =
+    await response.json();
+
+    throw {
+      code: errorData.code,
+      message: errorData.error
+    };
   }
 
   return await response.json();
