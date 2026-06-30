@@ -17,6 +17,7 @@ const [text, setText] =
 const [result, setResult] =
   useState(savedDraft.result || null);
   const [loading, setLoading] = useState(false);
+  const [listening, setListening] = useState(false);
   const [loadingText, setLoadingText] = useState("Checking...");
   const [loadingMessage, setLoadingMessage] = useState("");
   const [copiedType, setCopiedType] = useState("");
@@ -145,6 +146,65 @@ else {
   }, 1500);
 };
 
+const handleSpeechInput = () => {
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    setError(
+      "Browser tidak mendukung speech recognition."
+    );
+    return;
+  }
+
+  const recognition =
+    new SpeechRecognition();
+
+  const langMap = {
+  id: "id-ID",
+  en: "en-US",
+  de: "de-DE",
+  ko: "ko-KR",
+  ja: "ja-JP",
+  fr: "fr-FR",
+  es: "es-ES",
+  ru: "ru-RU",
+  tr: "tr-TR",
+  zh: "zh-CN",
+  ar: "ar-SA"
+};
+
+  recognition.lang =
+  langMap[appLanguage] || "en-US";
+
+  recognition.interimResults = false;
+
+  recognition.maxAlternatives = 1;
+
+  setListening(true);
+
+  recognition.start();
+
+  recognition.onresult = (event) => {
+    const transcript =
+      event.results[0][0].transcript;
+
+    setText(transcript);
+  };
+
+  recognition.onerror = () => {
+    setError(
+      "Speech recognition gagal."
+    );
+  };
+
+  recognition.onend = () => {
+    setListening(false);
+  };
+};
+
  const handleCopyResult = (textToCopy, type) => {
   if (!result) return;
   navigator.clipboard.writeText(
@@ -170,6 +230,13 @@ else {
         placeholder={t.enterText}
         rows="5"
       />
+       <div className="voice-controls">
+          <button
+          onClick={handleSpeechInput}
+          className="mic_button">
+            {listening ? "🔴 Listening..." : "🎙️"}
+          </button>
+        </div>
      
       <div className="grammar-tools">
         <button onClick={handlePaste}

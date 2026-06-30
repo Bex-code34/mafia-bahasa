@@ -4,6 +4,7 @@
   "description": "A language learning translator application",
   "private": true,
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@heroicons/react": "^2.2.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",

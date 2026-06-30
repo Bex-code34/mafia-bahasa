@@ -41,6 +41,7 @@ return {
   mode: data.mode,
   type: data.type,
   translations: data.translations,
+  examples: data.examples,
   detectedLanguage: data.detectedLanguage
 };
 };

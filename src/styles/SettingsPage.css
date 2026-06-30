@@ -190,6 +190,66 @@
   font-style: italic;
 }
 
+.feedback-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.feedback-input,
+.feedback-textarea {
+  width: 100%;
+  padding: 14px;
+  background: rgba(212,175,55,.05);
+  border: 1px solid rgba(212,175,55,.25);
+  border-radius: 10px;
+  color: #e1d9cb;
+  font-size: 14px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.feedback-input::placeholder,
+.feedback-textarea::placeholder {
+  color: #888;
+}
+
+.feedback-input:focus,
+.feedback-textarea:focus {
+  border-color: #D4AF37;
+  box-shadow: 0 0 10px rgba(212,175,55,.2);
+}
+
+.feedback-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.feedback-button {
+  background: linear-gradient(
+    135deg,
+    #D4AF37,
+    #F4D03F
+  );
+
+  color: black;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.feedback-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212,175,55,.25);
+}
+
+.feedback-button:active {
+  transform: scale(.98);
+}
+
 @media (min-width: 768px) {
   .settings-page {
     gap: 20px;

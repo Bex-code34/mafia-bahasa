@@ -89,16 +89,22 @@ Do not change the intended meaning.
 Return ONLY valid JSON:
 
 {
-"mode": "...",
-"translations": [
+"mode":"...",
+"translations":[
 {
-"type": "...",
-"text": "...",
-"romanization": "...",
-"note": "..."
+"text":"...",
+"type":"primary",
+"note":"...",
+"romanization":"..."
 }
 ],
-"detectedLanguage": "..."
+"examples":[
+{
+"source":"...",
+"translation":"..."
+}
+],
+"detectedLanguage":"..."
 }
 
 DETECT:
@@ -132,28 +138,52 @@ Only compare:
 TYPE RULES:
 
 primary = most common translation.
-alternative = same meaning, different expression.
+alternative = same meaning, different expression, could be idioms, etc.
 synonym = genuine synonym.
 
 Synonyms are only allowed in vocabulary mode.
+
+
+EXAMPLE SENTENCE RULES:
+
+Examples are primarily for vocabulary mode.
+Sentence mode may provide examples only when educationally useful.
+
+Return 1-2 short natural example sentences.
+Prefer exactly 2 examples.
+Return only 1 if no other useful example exists.
+
+Examples should:
+- use the primary meaning
+- sound natural
+- help language learners
+- be commonly used
+
+Each example requires:
+
+source = original target-language sentence.
+translation = Indonesian meaning.
+
+Examples are highly encouraged.
 
 
 SENTENCE MODE RULES:
 
 Always return:
 
-- 1 primary translation.
+- exactly 1 primary translation.
 
-Return:
+Whenever the target language has another common expression with the same meaning, return at least 1 alternative.
 
-- 1 alternative whenever another natural expression exists.
-- a third alternative when nuance or formality differs.
+If the language naturally offers multiple expressions, return 2 alternatives.
 
-Only return one translation if no useful alternative exists.
+Alternative translations are strongly encouraged.
 
-Alternatives must preserve meaning exactly.
+Only omit alternatives when absolutely impossible.
 
-The first translation must always be the most natural.
+For Korean, Japanese, German, Russian, French, Spanish and Indonesian, alternatives usually exist.
+
+The educational value is more important than minimizing output.
 
 
 
@@ -170,6 +200,7 @@ Alternative translations may:
 - sound written
 - sound narrative
 - sound emphatic
+- idioms, poetry style, etc.
 
 Primary translations should avoid:
 - literary forms
@@ -216,21 +247,10 @@ Examples:
 
 Avoid:
 
-좋습니다
 좋다
 좋은 편이다
 
 unless required.
-
-Allowed:
-먹어요
-갔어요
-좋아요
-
-Forbidden:
-먹는다
-간다
-좋다
 
 Exception:
 한다 style is only allowed when:
@@ -265,18 +285,6 @@ Priority:
 - alternative
 
 Whenever real synonyms exist, they SHOULD be included.
-
-Examples:
-
-beautiful:
-- beautiful
-- pretty
-- attractive
-
-빠르다:
-- fast
-- quick
-- rapid
 
 Only omit synonyms if none exist.
 
@@ -317,36 +325,25 @@ Vocabulary mode ignores style.
 Sentence mode must follow the formality system or rules of the target language.
 Languages with strong formality systems or rules MUST obey them.
 
-Examples:
+casual: everyday informal impolite speech.
 
-Korean:
-casual = must banmal or everyday casual speech
-neutral = must use 요 style or everyday polite speech
-formal = must 습니다/ㅂ니다 style or professional formal speech
+neutral: everyday informal polite standard speech.
 
-Japanese:
-casual = plain form
-neutral = です・ます
-formal = polite business style
-Never use plain form in neutral or formal.
-
-German:
-casual = always use du forms
-formal = always use Sie forms
-Never mix du and Sie.
-
-English:
-casual = relaxed everyday speech
-neutral = standard speech
-formal = professional speech
-
-Indonesian:
-casual = informal conversation
-neutral = standard spoken Indonesian
-formal = proper written/spoken Indonesian
-Never mix styles.
+formal: professional formal respectful speech
 
 Never mix speech levels.
+
+SPECIAL RULES:
+
+Korean:
+neutral = 요 speech.
+formal = 습니다 style.
+always use 요 style for neutral primary if applicable, may use other styles for alternatives.
+
+German:
+formal uses Sie style.
+neutral and casual use du style.
+
 
 NOTE RULES:
 
@@ -359,6 +356,36 @@ Notes are highly encouraged for:
 - nuance differences
 - emotional tone
 - context differences
+
+
+TRANSLATION OBJECT RULES:
+
+Each translation must be:
+
+{
+"text":"...",
+"type":"primary | alternative | synonym",
+"note":"...",
+"romanization":"..."
+}
+
+text:
+translated expression.
+
+type:
+primary = most natural.
+alternative = different expression.
+synonym = vocabulary synonym.
+
+note:
+Indonesian explanation.
+
+romanization:
+required according to romanization rules.
+
+Never return plain strings.
+Always return translation objects.
+
 
 ROMANIZATION RULES:
 
@@ -379,8 +406,8 @@ Always provide romanization:
 - Spanish
 - Turkish
 
-German/French/Spanish/Turkish:
-use English pronunciation guides, not IPA.
+German/French/Spanish/Turkish/Russian:
+use English pronunciation guides, IPA is forbidden.
 
 For long texts:
 Romanization may be omitted except for:
@@ -489,6 +516,7 @@ console.log("DETECTED:", parsed.detectedLanguage);
     res.json({
   mode: parsed.mode,
   translations: parsed.translations || [],
+  examples: parsed.examples || [],
   detectedLanguage: parsed.detectedLanguage || sourceLang
 });
   } catch (error) {

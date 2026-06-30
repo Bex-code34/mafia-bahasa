@@ -121,6 +121,32 @@
     margin-top: 10px;
   }
 
+.example-section {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(212,175,55,.15);
+}
+
+.example-item {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(212,175,55,.04);
+  border-radius: 8px;
+}
+
+.example-source {
+  color: #e1d9cb;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.example-translation {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #b8ac94;
+  font-style: italic;
+}
+
 @media (min-width: 768px) {
   .translation-card {
     padding: 20px;

@@ -134,6 +134,33 @@ return (
         </div>
       )
     )}
+
+    {translations.examples?.length > 0 && (
+  <div className="example-section">
+
+    <div className="translation-type">
+      📝 Examples
+    </div>
+
+    {translations.examples.map(
+      (example, index) => (
+        <div
+          key={index}
+          className="example-item"
+        >
+          <div className="example-source">
+            {example.source}
+          </div>
+
+          <div className="example-translation">
+            {example.translation}
+          </div>
+        </div>
+      )
+    )}
+
+  </div>
+)}
   </div>
 </div>
 

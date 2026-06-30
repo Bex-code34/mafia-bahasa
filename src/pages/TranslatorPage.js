@@ -71,6 +71,7 @@ const [style, setStyle] =
 }, []);
   const [detectedLanguage, setDetectedLanguage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [listening, setListening] = useState(false);
   const [loadingText, setLoadingText] = useState("Translating...");
   const [loadingMessage, setLoadingMessage] = useState("");
   const [error, setError] = useState("");
@@ -99,7 +100,7 @@ useEffect(() => {
 
   const timer = setTimeout(() => {
     setSourceSuggestion(null);
-  }, 6000);
+  }, 15000);
 
   return () => clearTimeout(timer);
 }, [sourceSuggestion]);
@@ -216,15 +217,17 @@ loadingSequence.forEach((message, index) => {
   style
 );
 
+const detected =
+  result.detectedLanguage
+    ?.toLowerCase()
+    ?.trim();
+
 if (
   sourceLanguage !== "auto_detect" &&
-  result.detectedLanguage &&
-  result.detectedLanguage !== sourceLanguage
+  detected &&
+  detected !== sourceLanguage
 ) {
-
-  setSourceSuggestion(
-    result.detectedLanguage
-  );
+  setSourceSuggestion(detected);
 
   setTimeout(() => {
   window.scrollTo({
@@ -233,7 +236,9 @@ if (
   });
 }, 100);
 
-  throw new Error("SOURCE_MISMATCH");
+  throw new Error(
+    "SOURCE_MISMATCH"
+  );
 }
 
 console.log("FULL RESULT:");
@@ -253,16 +258,8 @@ if (sourceLanguage === "auto_detect") {
 
 results[targetLang] = {
   mode: result.mode,
-  translations:
-    result.translations?.length > 0
-      ? result.translations
-      : [
-          {
-            type: "unknown",
-            text: "Input tidak dapat dikenali.",
-            note: "Teks tampaknya berupa karakter acak atau tidak memiliki makna."
-          }
-        ]
+  translations: result.translations || [],
+  examples: result.examples || []
 };
 
 trackTranslation(
@@ -274,7 +271,7 @@ trackTranslation(
       });
 
       await Promise.all(promises);
-      
+
       setTranslations(results);
       if (process.env.NODE_ENV !==
         "development") {
@@ -357,6 +354,60 @@ else {
     localStorage.removeItem("translatorDraft");
   };
 
+  const handleSpeechInput = () => {
+
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    setError(
+      "Browser tidak mendukung speech recognition."
+    );
+    return;
+  }
+
+  const recognition =
+    new SpeechRecognition();
+
+  recognition.lang =
+    sourceLanguage === "ko"
+      ? "ko-KR"
+      : sourceLanguage === "ja"
+      ? "ja-JP"
+      : sourceLanguage === "de"
+      ? "de-DE"
+      : sourceLanguage === "en"
+      ? "en-US"
+      : sourceLanguage === "id"
+      ? "id-ID"
+      : "en-US";
+
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  setListening(true);
+
+  recognition.start();
+
+  recognition.onresult = (event) => {
+    const transcript =
+      event.results[0][0].transcript;
+
+    setInputText(transcript);
+  };
+
+  recognition.onerror = () => {
+    setError(
+      "Speech recognition gagal."
+    );
+  };
+
+  recognition.onend = () => {
+    setListening(false);
+  };
+};
+
   return (
     <div className="translator-page">
       {/* Source Language Section */}
@@ -399,6 +450,13 @@ else {
 >
       {t.switchBtn}
     </button>
+    <button 
+    onClick={() =>
+      setSourceLanguage(null)
+    }
+    >
+      ❌
+    </button>
 
   </div>
 )}
@@ -429,6 +487,13 @@ else {
           maxLength="1000"
           rows="6"
         />
+        <div className="voice-controls">
+          <button
+          onClick={handleSpeechInput}
+          className="mic_button">
+            {listening ? "🔴 Listening..." : "🎙️"}
+          </button>
+        </div>
         <button onClick={handleClearInput} className="clear-button">
           {t.clearInput}
         </button>
@@ -497,7 +562,9 @@ else {
 
       <button
         onClick={handleTranslate}
-        disabled={loading}
+        disabled={loading || !
+          inputText.trim()
+        }
         className="translate-button"
       >
         {loading ? loadingText : t.translate}
