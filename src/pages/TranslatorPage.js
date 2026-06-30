@@ -3,6 +3,7 @@ import { getTranslation } from "../utils/translationEngine";
 import { historyStorage, settingsStorage, lastTranslationStorage, quotaStorage } from "../utils/storage";
 import TranslationCard from "../components/TranslationCard";
 import { appText } from "../utils/appLanguage";
+import { trackTranslation } from "../utils/analytics";
 import "../styles/TranslatorPage.css";
 
 function TranslatorPage({ onTranslate, appLanguage }) {
@@ -263,9 +264,17 @@ results[targetLang] = {
           }
         ]
 };
+
+trackTranslation(
+  sourceLanguage,
+  targetLang,
+  result.mode
+);
+
       });
 
       await Promise.all(promises);
+      
       setTranslations(results);
       if (process.env.NODE_ENV !==
         "development") {

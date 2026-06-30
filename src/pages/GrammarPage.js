@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { checkGrammar } from "../utils/translationEngine";
 import { historyStorage, quotaStorage } from "../utils/storage";
 import { appText } from "../utils/appLanguage";
+import { trackGrammar } from "../utils/analytics";
 import "../styles/GrammarPage.css";
 
 function GrammarPage({appLanguage}) {
@@ -71,6 +72,11 @@ loadingMessages.forEach((message, index) =>
       const data = await checkGrammar(
         text,
         "auto"
+      );
+
+      trackGrammar(
+        text,
+        data.score
       );
 
       setResult(data);
